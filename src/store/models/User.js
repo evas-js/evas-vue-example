@@ -28,48 +28,4 @@ export class User extends Model
             referals: this.hasMany(User, 'id', 'referer_id'),
         }
     }
-
-
-
-    // Model.js
-
-    // static validateErrorHandlers = {}
-    // static defaultValidateErrorHandler = null
-
-    // static setDefaultValidateErrorHandler(cb) {
-    //     if ('function' !== typeof cb) throw new Error(
-    //         `default validate error handler must be a function, ${typeof cb} given`
-    //     )
-    //     this.defaultValidateErrorHandler = cb
-    //     return this
-    // }
-
-    // static addValidateErrorHandler(fieldName, cb) {
-    //     if (!['string', 'number'].includes(typeof fieldName)) throw new Error(
-    //         `validate error handler field name must a string, ${typeof fieldName} given`
-    //     )
-    //     if ('function' !== typeof cb) throw new Error(
-    //         `validate error handler for field "${fieldName}" must be a function, ${typeof cb} given`
-    //     )
-    //     this.validateErrorHandlers[fieldName] = cb
-    //     return this
-    // }
-
-    // static handleValidateError(field, error) {
-    //     if (this.validateErrorHandlers[field._name]) {
-    //         this.validateErrorHandlers[field._name](error)
-    //     } else if (this.defaultValidateErrorHandler) {
-    //         this.defaultValidateErrorHandler(error, field._name)
-    //     } else {
-    //         console.error(field, error)
-    //     }
-    // }
 }
-
-// // Component
-
-// // this.model.addValidateErrorHandler('email', asd)
-// this.model.setDefaultValidateErrorHandler((error, fieldName) => {
-//     // 
-// })
-
