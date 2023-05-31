@@ -1,0 +1,36 @@
+* {box-sizing: border-box; margin: 0; outline: none; padding: 0; vertical-align: middle;}
+body {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    moz-osx-font-smoothing: grayscale;
+}
+
+button {cursor: pointer;}
+
+table {border-collapse: collapse; margin: 10px 0; width: 100%;}
+td, th {border: solid #aaa 1px; padding: 5px 10px;}
+table tr {}
+table tr:nth-child(2n + 1) {background: #ddd;}
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+nav {
+  padding: 30px;
+}
+
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+  color: #42b983;
+}
