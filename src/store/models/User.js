@@ -12,7 +12,7 @@ export class User extends Model
         'one': 'user.one',
     }
 
-    static fields() {
+    static setFields() {
         return {
             id: this.number().nullable(),
             name: this.string('John Doe').min(3).max(10),
@@ -22,7 +22,7 @@ export class User extends Model
         }
     }
 
-    static relations() {
+    static setRelations() {
         return {
             referer: this.belongsTo(User, 'referer_id'),
             referals: this.hasMany(User, 'id', 'referer_id'),

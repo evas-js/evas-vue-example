@@ -1,17 +1,4 @@
 <template>
-    <form @submit.prevent="add">
-        <fieldset>
-            <legend>Add {{ modelName }}</legend>
-            <input v-model="newName" placeholder="name">
-            <input v-model.number="newRefererId" placeholder="referer_id">
-            <button type="submit">+ Add</button>
-            <div class="errors">
-                <div v-for="error,i in errors" :key="i">
-                    {{ error }}
-                </div>
-            </div>
-        </fieldset>
-    </form>
     <table class="TableView">
         <tr>
             <th v-for="key in keys" :key="key">{{ key }}</th>
@@ -28,6 +15,20 @@
             </td>
         </tr>
     </table>
+
+    <form @submit.prevent="add">
+        <fieldset>
+            <legend>Add {{ modelName }}</legend>
+            <input v-model="newName" placeholder="name">
+            <input v-model.number="newRefererId" placeholder="referer_id">
+            <button type="submit">+ Add</button>
+            <div class="errors">
+                <div v-for="error,i in errors" :key="i">
+                    {{ error }}
+                </div>
+            </div>
+        </fieldset>
+    </form>
 </template>
 
 <script>
@@ -78,7 +79,7 @@ export default {
     },
     created() {
         this.model.fetchList()
-        this.model.setDefaultValidateErrorHandler(this.addError)
+        this.model.setValidateErrorHandler(this.addError)
     },
 }
 </script>

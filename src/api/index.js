@@ -6,7 +6,10 @@ const response = (data, cb) => {
     if (cb) setTimeout(() => cb(data), delay)
 }
 
-const mockApi = new MockApi({ users: [] })
+const users = [
+    { id: 1, name: 'Egor', email: 'egor@evas-php.com' },
+]
+const mockApi = new MockApi({ users })
 
 export const api = {
     user: {
