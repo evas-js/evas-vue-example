@@ -1,0 +1,88 @@
+<template>
+    <form @submit.prevent="save">
+        <fieldset>
+            <legend>{{ title }}</legend>
+            <div>
+                <input v-model="data.name" placeholder="name">
+                <input v-model="data.email" placeholder="email">
+                <input v-model.number="data.referer_id" placeholder="referer_id">
+                <select v-model="data.type">
+                    <option disabled>Select type</option>
+                    <option v-for="option, key in typeOptions" :key="key" :value="key">
+                        {{ option }}
+                    </option>
+                </select>
+                <select v-model="data.role">
+                    <option disabled>Select role</option>
+                    <option v-for="option, key in roleOptions" :key="key" :value="key">
+                        {{ option }}
+                    </option>
+                </select>
+                <button type="submit">{{ btnText }}</button>
+                <div class="errors">
+                    <div v-for="error,i in data.$errors" :key="i">
+                        {{ error }}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</template>
+
+<script>
+export default {
+    props: {
+        modelName: { type: String },
+        entity: { type: Object, default: () => {} },
+        title: { type: String },
+        btnText: { type: String },
+    },
+    emits: ['saveCb'],
+    watch: {
+        entity() {
+            this.setData()
+        },
+    },
+    data() {
+        return {
+            data: {}
+        }
+    },
+    computed: {
+        model() {
+            return this.$models[this.modelName]
+        },
+        typeOptions() {
+            if (!this.model) return []
+            let options = this.model.fieldOptions('type')
+            // options[options.length] = 'incorrect'
+            return options
+        },
+        roleOptions() {
+            if (!this.model) return []
+            let options = this.model.fieldOptions('role')
+            // options['incorrect'] = 'incorrect'
+            return options
+        },
+    },
+    methods: {
+        setData() {
+            this.data = this.entity
+            if (!this.data) {
+                this.data = {
+                    name: null,
+                    email: null,
+                    referer_id: null,
+                    type: null,
+                }
+            }
+        },
+        save() {
+            this.$emit('saveCb', this.data)
+        },
+    },
+    created() {
+        this.setData()
+    },
+}
+</script>

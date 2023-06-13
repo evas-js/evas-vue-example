@@ -5,12 +5,24 @@ body {
     moz-osx-font-smoothing: grayscale;
 }
 
-button {cursor: pointer;}
+fieldset {background: #eee; border-radius: 5px;}
+input, textarea, select, button {border: solid transparent 1px; border-radius: 5px; padding: 5px 10px;}
+input, textarea, select {background: #fff; border-color: #ccc;}
+input:hover, textarea:hover, select:hover {border-color: #aaa;}
+input:focus, textarea:focus, select:focus {border-color: #42b983;}
+button {background: #209761; color: #fff; cursor: pointer;}
+button:hover {background: #108751;}
 
 table {border-collapse: collapse; margin: 10px 0; width: 100%;}
 td, th {border: solid #aaa 1px; padding: 5px 10px;}
 table tr {}
 table tr:nth-child(2n + 1) {background: #ddd;}
+
+.forms {align-items: center; display: flex; gap: 10px;}
+.forms form {width: 50%;}
+.forms fieldset > div {align-items: flex-start; display: flex; flex-direction: column;}
+.forms fieldset > legend, .forms fieldset > div * {margin: 5px 15px;}
+
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -18,19 +30,10 @@ table tr:nth-child(2n + 1) {background: #ddd;}
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  max-width: 400px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
+nav {padding: 30px;}
+nav a {color: #2c3e50; font-weight: bold;}
+nav a.router-link-exact-active {color: #42b983;}

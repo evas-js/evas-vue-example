@@ -1,4 +1,6 @@
-import { MockApi } from 'evas-vue'
+// import { MockApi } from 'evas-vue'
+import { MockApi } from '@/core/index.js'
+import { users } from './mock.js'
 
 const delay = 100
 
@@ -6,12 +8,9 @@ const response = (data, cb) => {
     if (cb) setTimeout(() => cb(data), delay)
 }
 
-const users = [
-    { id: 1, name: 'Egor', email: 'egor@evas-php.com' },
-]
 const mockApi = new MockApi({ users })
 
-export const api = {
+export default {
     user: {
         insert: (data, cb) => {
             response(mockApi.insert('users', data), cb)
