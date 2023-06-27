@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="save">
+    <form>
         <fieldset>
             <legend>{{ title }}</legend>
             <div>
@@ -18,7 +18,10 @@
                         {{ option }}
                     </option>
                 </select>
-                <button type="submit">{{ btnText }}</button>
+                <div class="buttons">
+                    <button @click.prevent="save" type="submit" :disabled="!isDirty">{{ btnText }}</button>
+                    <button @click.prevent="rollbackChanges">{{ isDirty ? 'Cancel' : 'Close' }}</button>
+                </div>
                 <div class="errors">
                     <div v-for="error,i in data.$errors" :key="i">
                         {{ error }}
@@ -37,7 +40,7 @@ export default {
         title: { type: String },
         btnText: { type: String },
     },
-    emits: ['saveCb'],
+    emits: ['saveCb', 'closeCb'],
     watch: {
         entity() {
             this.setData()
@@ -64,21 +67,28 @@ export default {
             // options['incorrect'] = 'incorrect'
             return options
         },
+        isDirty() {
+            return this.entity ? this.entity.$isDirty : true
+        },
     },
     methods: {
         setData() {
-            this.data = this.entity
-            if (!this.data) {
-                this.data = {
-                    name: null,
-                    email: null,
-                    referer_id: null,
-                    type: null,
-                }
+            this.data = this.entity || {
+                name: null,
+                email: null,
+                referer_id: null,
+                type: null,
             }
         },
         save() {
             this.$emit('saveCb', this.data)
+        },
+        rollbackChanges() {
+            if (this.entity) {
+                this.entity.$rollbackChanges()
+                this.entity.$clearErrors()
+            }
+            this.$emit('closeCb')
         },
     },
     created() {

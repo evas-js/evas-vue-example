@@ -16,6 +16,16 @@
                 <button @click="row.$delete()">Delete</button>
             </td>
         </tr>
+        <tr>
+            <th :colspan="keys.length">
+                totalRows: {{ model.totalRows }}
+                size: {{ model.size() }}
+            </th>
+            <th>
+                <button @click="model.clear">Clear</button>
+                <button @click="fetchList">fetchList</button>
+            </th>
+        </tr>
     </table>
 
     <div class="forms">
@@ -31,6 +41,7 @@
             :entity="editing" :title="'Edit '+ modelName +' #'+ editing.id"
             btnText="Save"
             @saveCb="update"
+            @closeCb="close"
         />
     </div>
 
@@ -87,9 +98,15 @@ export default {
                 if (this.editing.$errors.length < 1) this.editing = null
             })
         },
+        close() {
+            this.editing = null
+        },
+        fetchList() {
+            this.model.fetchList()
+        },
     },
     created() {
-        this.model.fetchList()
+        this.fetchList()
         this.model.setValidateErrorHandler(this.addError)
     },
     components: { UserForm }
