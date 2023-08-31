@@ -10,6 +10,7 @@ input, textarea, select, button {border: solid transparent 1px; border-radius: 5
 input, textarea, select {background: #fff; border-color: #ccc;}
 input:hover, textarea:hover, select:hover {border-color: #aaa;}
 input:focus, textarea:focus, select:focus {border-color: #42b983;}
+input:disabled, textarea:disabled, select:disabled {border-color: #ccc; cursor: not-allowed; opacity: .9;}
 button {background: #209761; color: #fff; cursor: pointer;}
 button:hover {background: #108751;}
 

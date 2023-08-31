@@ -3,6 +3,7 @@
         <fieldset>
             <legend>{{ title }}</legend>
             <div>
+                <input v-model="data.$id" placeholder="id" disabled>
                 <input v-model="data.name" placeholder="name">
                 <input v-model="data.email" placeholder="email">
                 <input v-model.number="data.referer_id" placeholder="referer_id">
