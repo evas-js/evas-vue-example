@@ -16,7 +16,7 @@ export default {
             response(mockApi.insert('users', data), cb)
         },
         update: (data, cb) => response(mockApi.update('users', data), cb),
-        delete: (data, cb) => response(mockApi.remove('users', data), cb),
+        delete: (data, cb) => response(mockApi.delete('users', data), cb),
         list: (data, cb) => response(mockApi.list('users', data), cb),
     },
 }

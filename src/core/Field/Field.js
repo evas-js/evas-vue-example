@@ -15,7 +15,7 @@ export class Field {
     /** @var Boolean обязательность значения */
     required = true
     /** @var String тип */
-    type = 'string'
+    type
     /** @var Number минимальное значение или длина */
     min = 0
     /** @var Number максимальное значение или длина */
@@ -40,14 +40,11 @@ export class Field {
      * @param object|null свойства поля
      */
     constructor(props) {
-        // if (props) for (let key in props) this[key] = props[key]
         if (props) {
             if (props instanceof FieldBuilder) {
                 props = props.export()
             }
             if ('object' === typeof props && !Array.isArray(props)) for (let key in props) {
-                // let func = this[key]
-                // if (func) func.call(this, props[key])
                 this[key] = props[key]
             }
             else {
@@ -58,17 +55,6 @@ export class Field {
                 )
             }
         }
-
-        // return new Proxy(this, {
-        //     // get: function (self, key) {
-        //     get: function (self, key) {
-        //         // if (key in self) return self[key]
-        //         return function () {
-        //             console.log(key, arguments)
-        //             return this
-        //         }
-        //     }
-        // })
     }
 
     /** Геттер лейбла или имени поля. */
@@ -114,7 +100,8 @@ export class Field {
             return isNaN(newValue) ? value : newValue
         }
         if (this.isBooleanType) return Boolean(value)
-        throw new Error(`Field "${this._name}" has unknown type: ${this._type}`)
+        // throw new Error(`Field "${this._name}" has unknown type: ${this._type}`)
+        return value
     }
 
     /**

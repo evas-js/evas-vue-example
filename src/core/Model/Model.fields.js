@@ -61,6 +61,10 @@ Model.field = function (name) {
     return this.fields()[name]
 }
 
+Model.prototype.$field = function (name) {
+    return this.constructor.field(name)
+}
+
 /**
  * Получнеие опций поля.
  * @param string имя поля
@@ -81,14 +85,17 @@ Model.fieldOptions = function (name) {
     }
 }
 
+Model.prototype.$fieldOptions = function (name) {
+    return this.constructor.fieldOptions(name)
+}
+
 Model.eachFields = function (cb, names) {
     if (!names) names = this.fieldNames()
     for (let name of names) {
         let field = this.field(name)
         if (!field) {
-            throw new Error(
-                `Field "${name}" not registered in model "${this.name}"`
-            )
+            console.warn(`Field "${name}" not registered in model "${this.name}"`)
+            continue
         }
         if (cb.apply(this, [field, name])) return true
     }

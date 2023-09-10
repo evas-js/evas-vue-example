@@ -44,12 +44,13 @@ export default {
     emits: ['saveCb', 'closeCb'],
     watch: {
         entity() {
-            this.setData()
+            console.log('watch entity', this.entity)
+            // this.setData()
         },
     },
     data() {
         return {
-            data: {}
+            // data: {}
         }
     },
     computed: {
@@ -71,29 +72,36 @@ export default {
         isDirty() {
             return this.entity ? this.entity.$isDirty : true
         },
+        data() {
+            return this.entity || new this.model
+        },
     },
     methods: {
-        setData() {
-            this.data = this.entity || {
-                name: null,
-                email: null,
-                referer_id: null,
-                type: null,
-            }
-        },
+        // setData() {
+        //     this.data = this.entity || {
+        //         name: null,
+        //         email: null,
+        //         referer_id: null,
+        //         type: null,
+        //     }
+        // },
         save() {
             this.$emit('saveCb', this.data)
         },
         rollbackChanges() {
-            if (this.entity) {
-                this.entity.$rollbackChanges()
-                this.entity.$clearErrors()
+            // if (this.entity) {
+            //     this.entity.$rollbackChanges()
+            //     this.entity.$clearErrors()
+            // }
+            if (this.data) {
+                this.data.$rollbackChanges()
+                this.data.$clearErrors()
             }
             this.$emit('closeCb')
         },
     },
-    created() {
-        this.setData()
-    },
+    // created() {
+    //     this.setData()
+    // },
 }
 </script>
