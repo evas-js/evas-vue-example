@@ -7,6 +7,8 @@
 
 import { logger } from '../Log.js'
 import { Model } from './Model.js'
+import { Field } from '../Field/Field.js'
+import { FieldsUnion } from '../Field/FieldsUnion.js'
 
 /** @var Function обработчик ошибок валидации */
 Model.validateErrorHandler = null
@@ -52,10 +54,54 @@ Model.prototype.$validate = function () {
     return logger.methodCall(`${this.$entityName}{${this.$id}}.$validate`, arguments, () => {
         this.$clearErrors()
         this.constructor.eachFields((field) => {
-            if (!field.isValid(this[field.name])) {
+            // if (!field.isValid(this[field.name])) {
+            //     this.constructor.handleValidateError(field, field.error)
+            //     this.$errors.push(field.error)
+            // }
+            console.log('field instanceof FieldsUnion', field instanceof FieldsUnion, field)
+            console.log('this.$dirtyFields()', this.$dirtyFields())
+            if (field instanceof FieldsUnion) {
+                console.log('instanceof FieldsUnion')
+                if (!field.isValid(this[field.name])) {
+                    this.constructor.handleValidateError(field, field.error)
+                    this.$errors.push(field.error)
+                }
+            }
+
+            if (field instanceof Field && !field.isValid(this[field.name])) {
                 this.constructor.handleValidateError(field, field.error)
                 this.$errors.push(field.error)
             }
+
+            if (Array.isArray(field.value) && field.itemOf) {
+                if (field.itemOf instanceof FieldsUnion) {
+                    field.value.forEach(item => {
+                        // field.itemOf.name = `${field.name} [${index}]`
+                        if (!field.itemOf.isValid(item)) {
+                            this.constructor.handleValidateError(field.itemOf, field.itemOf.error)
+                            this.$errors.push(field.itemOf.error)
+                        }
+                    })
+                }
+
+                if (field.itemOf instanceof Field) {
+
+                    this[field.name] = field.value = field.value.map(item => {
+                        // field.itemOf.name = `${field.name} [${index}]`
+                        field.itemOf.name = field.name
+
+                        if (!field.itemOf.isValid(item)) {
+                            this.constructor.handleValidateError(field.itemOf, field.itemOf.error)
+                            this.$errors.push(field.itemOf.error)
+                            return item
+                        }
+
+                        return field.itemOf.convertType(item)
+                    })
+                }
+            }
+
+
         }, this.$dirtyFields())
         return this.$errors.length < 1
     })

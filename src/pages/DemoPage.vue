@@ -14,7 +14,11 @@ export default {
     data() {
         return {
             keys: [
-                'id', 'name', 'email', 'type', 'role', 'referer_id', 'referer.name',
+                'id', 'name', 
+                // 'email', 
+                // 'type', 'role', 
+                'tags',
+                // 'referer_id', 'referer.name',
             ],
         }
     },

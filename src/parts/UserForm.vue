@@ -5,20 +5,21 @@
             <div>
                 <input v-model="data.$id" placeholder="id" disabled>
                 <input v-model="data.name" placeholder="name">
-                <input v-model="data.email" placeholder="email">
-                <input v-model.number="data.referer_id" placeholder="referer_id">
-                <select v-model="data.type">
+                <!-- <input v-model="data.email" placeholder="email"> -->
+                <!-- <input v-model.number="data.referer_id" placeholder="referer_id"> -->
+               <!--  <select v-model="data.type">
                     <option disabled>Select type</option>
                     <option v-for="option, key in typeOptions" :key="key" :value="key">
                         {{ option }}
                     </option>
-                </select>
-                <select v-model="data.role">
+                </select> -->
+                <!-- <select v-model="data.role">
                     <option disabled>Select role</option>
                     <option v-for="option, key in roleOptions" :key="key" :value="key">
                         {{ option }}
                     </option>
-                </select>
+                </select> -->
+                <input v-model="data.tags" placeholder="tags">
                 <div class="buttons">
                     <button @click.prevent="save" type="submit" :disabled="!isDirty">{{ btnText }}</button>
                     <button @click.prevent="rollbackChanges">{{ isDirty ? 'Cancel' : 'Close' }}</button>
@@ -86,6 +87,14 @@ export default {
         //     }
         // },
         save() {
+            let tags = this?.data?.tags
+            if (tags) {
+                tags = tags.split(',')
+                if (tags.length < 1 || !tags[0]) {
+                    tags = null
+                }
+                this.data.tags = tags
+            }
             this.$emit('saveCb', this.data)
         },
         rollbackChanges() {

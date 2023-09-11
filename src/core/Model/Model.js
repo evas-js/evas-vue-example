@@ -7,6 +7,7 @@
 
 import { logger } from '../Log.js'
 import { Query } from '../Query.js'
+import { FieldsUnion } from '../Field/FieldsUnion.js'
 
 export class Model {
     constructor (data, afterFetch = true) {
@@ -46,29 +47,69 @@ Object.defineProperty(Model.prototype, '$id', {
     }
 })
 
+/**
+ * Установка значения поля .
+ */
+Model.prototype.$setFieldValueWithConvertedType = function (field, data) {
+    this[field.name] = field.convertType(undefined !== data[field.name]
+        ? data[field.name]
+        : field.getDefault());
+    // logger.keyValue(
+    //     `$setFieldValueWithConvertedType ${this.$entityName}{${this.$id}}.${field.name}`, 
+    //     this[field.name]
+    // );
+}
+
+/**
+ * Заполнение свойств записи.
+ * @param Object данные [имя поля/связи => значение]
+ */
 Model.prototype.$fill = function (data) {
-    let id = this.$id || data[this.constructor.primary]
+    const id = this.$id || data[this.constructor.primary]
     logger.methodCall(`${this.$entityName}{${id}}.$fill`, arguments, () => {
-        logger.returnGroup(() => {
-            this.constructor.eachFields((field) => {
-                this[field.name] = field.convertType(undefined !== data[field.name]
-                    ? data[field.name]
-                    : field.getDefault())
-                logger.keyValue(`${this.$entityName}{${this.$id}}.${field.name}`, this[field.name])
-            })
-        }, 'fill in the fields')
-        logger.returnGroup(() => {
-            this.constructor.eachRelations((field) => {
-                if (undefined !== data[field.name]) {
-                    this[field.name] = data[field.name]
-                    field.foreignModel.insertOrUpdate(data[field.name], true)
-                    logger.keyValue(`${this.$entityName}{${this.$id}}.${field.name}`, this[field.name])
-                } else {
-                    // this[field.name] = field.default
-                }
-            })
-        }, 'fill in the relations')
+        this._$fillFields(data)
+        this._$fillRelatons(data)
     })
+}
+/**
+ * Заполнение свойств-полей записи.
+ * @param Object данные [имя поля/связи => значение]
+ */
+Model.prototype._$fillFields = function (data) {
+    const id = this.$id || data[this.constructor.primary]
+    logger.returnGroup(() => {
+        this.constructor.eachFields((field) => {
+            if (field instanceof FieldsUnion) {
+                for (let key in field.fields) {
+                    let _field = field.fields[key];
+                    if (_field.isValid(data[_field.name])) {
+                        this.$setFieldValueWithConvertedType(_field, data);
+                    }
+                }
+            } else {
+                this.$setFieldValueWithConvertedType(field, data);
+            }
+            logger.keyValue(`${this.$entityName}{${id}}.${field.name}`, this[field.name])
+        })
+    }, 'fill in the fields')
+}
+/**
+ * Заполнение свойств-связей записи.
+ * @param Object данные [имя поля/связи => значение]
+ */
+Model.prototype._$fillRelatons = function (data) {
+    const id = this.$id || data[this.constructor.primary]
+    logger.returnGroup(() => {
+        this.constructor.eachRelations((field) => {
+            if (undefined !== data[field.name]) {
+                this[field.name] = data[field.name]
+                field.foreignModel.insertOrUpdate(data[field.name], true)
+                logger.keyValue(`${this.$entityName}{${id}}.${field.name}`, this[field.name])
+            } else {
+                // this[field.name] = field.default
+            }
+        })
+    }, 'fill in the relations')
 }
 
 // Model hooks

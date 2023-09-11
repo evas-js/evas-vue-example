@@ -13,7 +13,7 @@ Model.prototype.$state = {}
 
 Model.prototype.$saveState = function () {
     this.$state = structuredClone(this)
-    logger.methodCall(`${this.entityName}.$saveState`, arguments)
+    logger.methodCall(`${this.$entityName}{${this.$id}}.$saveState`, arguments)
 }
 
 /**
@@ -41,7 +41,7 @@ Object.defineProperty(Model.prototype, '$isDirty', { get: function () {
  */
 Model.prototype.$isDirtyField = function (name) {
     let stateValue = this.$state[name]
-    if (Array.isArray(stateValue)) {
+    if (Array.isArray(stateValue) && Array.isArray(this[name])) {
         return JSON.stringify(stateValue.sort()) !== JSON.stringify(this[name].sort())
     } else if (typeof(stateValue) === 'object' && ![null, undefined].includes(stateValue)) {
         return JSON.stringify(stateValue) !== JSON.stringify(this[name])

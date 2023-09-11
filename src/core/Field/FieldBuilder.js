@@ -29,6 +29,8 @@ export class FieldBuilder {
     /** @var mixed значение по умолчанию */
     _default
 
+    _itemOf
+
     name(value) {
         this._name = value
         return this

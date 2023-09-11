@@ -13,11 +13,22 @@ export class User extends Model {
         return {
             id: this.number().nullable(),
             name: this.string('John Doe').min(3).max(10),
-            email: this.string('john_doe@example.com').pattern(/^.{2,}@.{2,}\..{2,}$/).nullable(),
-            create_time: this.string(() => (new Date).toString()).nullable(),
-            type: this.number().options({1: 'admin', 2: 'sale', 3: 'dev'}).nullable(),
-            role: this.string().options('admin', 'sale', 'front', 'back').nullable(),
-            referer_id: this.number().nullable(),
+            // email: this.string('john_doe@example.com').pattern(/^.{2,}@.{2,}\..{2,}$/).nullable(),
+            // create_time: this.string(() => (new Date).toString()).nullable(),
+            // type: this.number().options({1: 'admin', 2: 'sale', 3: 'dev'}).nullable(),
+            // role: this.string().options('admin', 'sale', 'front', 'back').nullable(),
+            // tags: this.array(this.string().pattern(/^\d+$/)).nullable(),
+            tags: this.anyOf([
+                this.string().pattern(/^\d+$/),
+                this.string().pattern(/^[a-z]+$/)
+            ]),
+            // tags: this.array(
+            //     this.anyOf([
+            //         this.string().pattern(/^\d+$/),
+            //         this.string().pattern(/^[a-z]+$/)
+            //     ])
+            // ).nullable(),
+            // referer_id: this.number().nullable(),
         }
     }
 
