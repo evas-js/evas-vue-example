@@ -60,15 +60,8 @@ Model.prototype.$validate = function () {
             // }
             console.log('field instanceof FieldsUnion', field instanceof FieldsUnion, field)
             console.log('this.$dirtyFields()', this.$dirtyFields())
-            if (field instanceof FieldsUnion) {
-                console.log('instanceof FieldsUnion')
-                if (!field.isValid(this[field.name])) {
-                    this.constructor.handleValidateError(field, field.error)
-                    this.$errors.push(field.error)
-                }
-            }
 
-            if (field instanceof Field && !field.isValid(this[field.name])) {
+            if (!field.isValid(this[field.name]) && (field instanceof FieldsUnion || field instanceof Field)) {
                 this.constructor.handleValidateError(field, field.error)
                 this.$errors.push(field.error)
             }

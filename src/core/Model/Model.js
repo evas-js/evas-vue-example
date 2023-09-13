@@ -51,13 +51,14 @@ Object.defineProperty(Model.prototype, '$id', {
  * Установка значения поля .
  */
 Model.prototype.$setFieldValueWithConvertedType = function (field, data) {
-    this[field.name] = field.convertType(undefined !== data[field.name]
-        ? data[field.name]
-        : field.getDefault());
+    // this[field.name] = field.convertType(undefined !== data[field.name]
+    //     ? data[field.name]
+    //     : field.getDefault())
+    this[field.name] = field.convertTypeWithDefault(data[field.name])
     // logger.keyValue(
     //     `$setFieldValueWithConvertedType ${this.$entityName}{${this.$id}}.${field.name}`, 
     //     this[field.name]
-    // );
+    // )
 }
 
 /**
@@ -80,14 +81,23 @@ Model.prototype._$fillFields = function (data) {
     logger.returnGroup(() => {
         this.constructor.eachFields((field) => {
             if (field instanceof FieldsUnion) {
+                /**
+                 * @todo Поправить!!!
+                 */
+                let finded = false
                 for (let key in field.fields) {
-                    let _field = field.fields[key];
+                    let _field = field.fields[key]
                     if (_field.isValid(data[_field.name])) {
-                        this.$setFieldValueWithConvertedType(_field, data);
+                        this.$setFieldValueWithConvertedType(_field, data)
+                        finded = true
+                        break
                     }
                 }
+                if (!finded) {
+                    this[field.name] = data[field.name]
+                }
             } else {
-                this.$setFieldValueWithConvertedType(field, data);
+                this.$setFieldValueWithConvertedType(field, data)
             }
             logger.keyValue(`${this.$entityName}{${id}}.${field.name}`, this[field.name])
         })

@@ -137,6 +137,15 @@ export class Field {
     getDefault() {
         return 'function' === typeof this.default ? this.default() : this.default
     }
+
+    /**
+     * Подучение значения конвертированного типа или дефолтного значения.
+     * @param mixed значение
+     * @return mixed значение
+     */
+    convertTypeWithDefault(value) {
+        return this.convertType(value !== undefined ? value : this.getDefault())
+    }
 }
 
 require('./Field.validate.js')

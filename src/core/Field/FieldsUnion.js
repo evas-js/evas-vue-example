@@ -28,27 +28,26 @@ export class FieldsUnion {
             this.fields[key].isValid(value)
             this.errors.push(this.fields[key].error)
         }
-        let res = true
-        if (this.type === 'anyOf') res = this._anyOfValidate()
-        if (this.type === 'allOf') res = this._allOfValidate()
-        if (this.type === 'oneOf') res = this._oneOfValidate()
-        console.log('FieldsUnion.isValid', this.errors, res)
-        return res
+        if (this.type === 'anyOf') return this._anyOfValidate()
+        if (this.type === 'allOf') return this._allOfValidate()
+        if (this.type === 'oneOf') return this._oneOfValidate()
+        return true
     }
 
     _anyOfValidate() {
-        // return this.errors.includes(null) ? null : this.errors[0]
         return this.errors.some(error => error === null)
     }
 
     _allOfValidate() {
         return this.errors.every(error => error === null)
-        // return this.errors.find(error => error !== null) || null
     }
 
     _oneOfValidate() {
         const count = this.errors.filter(error => error === null).length
-        if (count > 1) return 'Ошибка oneOf'
-        if (count === 0) return this.errors[0]
+        if (count > 1) {
+            this.errors.unshift('Ошибка oneOf')
+            return false
+        }
+        return count === 1 ? true : false
     }
 }

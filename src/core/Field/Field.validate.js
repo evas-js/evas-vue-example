@@ -87,7 +87,7 @@ Field.prototype.validateType = function (value) {
  */
 Field.prototype.validateLength = function (value) {
     return (
-        this.isStringType && this.validateRequired(value) && value
+        this.isStringType && this.validateRequired(value) && !this.isEmptyValue(value)
         && (
             (this.min && value.length < this.min) 
             || (this.max && value.length > this.max)
@@ -102,8 +102,7 @@ Field.prototype.validateLength = function (value) {
  */
 Field.prototype.validateRange = function (value) {
     return (
-        this.isNumberType && this.validateRequired(value) 
-        && !this.isEmptyValue(value)
+        this.isNumberType && this.validateRequired(value) && !this.isEmptyValue(value)
         && (
             (this.min && value < this.min) 
             || (this.max && value > this.max)
