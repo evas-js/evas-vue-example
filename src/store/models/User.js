@@ -18,16 +18,19 @@ export class User extends Model {
             // type: this.number().options({1: 'admin', 2: 'sale', 3: 'dev'}).nullable(),
             // role: this.string().options('admin', 'sale', 'front', 'back').nullable(),
             // tags: this.array(this.string().pattern(/^\d+$/)).nullable(),
-            tags: this.anyOf([
+            tagAny: this.anyOf([
                 this.string().pattern(/^\d+$/),
                 this.string().pattern(/^[a-z]+$/)
             ]),
-            // tags: this.array(
-            //     this.anyOf([
-            //         this.string().pattern(/^\d+$/),
-            //         this.string().pattern(/^[a-z]+$/)
-            //     ])
-            // ).nullable(),
+            tagsAny: this.array(
+                this.anyOf([
+                    this.number().pattern(/^\d+$/),
+                    this.string().pattern(/^[a-z]+$/)
+                ])
+            ).nullable(),
+            tagsArray: this.array(
+                this.string().pattern(/^\d+$/)
+            ).required(false),
             // referer_id: this.number().nullable(),
         }
     }

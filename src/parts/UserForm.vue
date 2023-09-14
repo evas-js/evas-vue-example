@@ -19,7 +19,9 @@
                         {{ option }}
                     </option>
                 </select> -->
-                <input v-model="data.tags" placeholder="tags">
+                <input v-model="data.tagAny" placeholder="tagAny">
+                <input v-model="data.tagsAny" placeholder="tagsAny">
+                <input v-model="data.tagsArray" placeholder="tagsArray">
                 <div class="buttons">
                     <button @click.prevent="save" type="submit" :disabled="!isDirty">{{ btnText }}</button>
                     <button @click.prevent="rollbackChanges">{{ isDirty ? 'Cancel' : 'Close' }}</button>
@@ -86,15 +88,29 @@ export default {
         //         type: null,
         //     }
         // },
-        save() {
-            let tags = this?.data?.tags
-            if (tags) {
-                tags = tags.split(',')
-                if (tags.length < 1 || !tags[0]) {
-                    tags = null
+        split(fieldName) {
+            let value = this?.data?.[fieldName]
+            if ('string' === typeof value) {
+                value = value.split(',')
+                if (value.length < 1 || !value[0]) {
+                    value = null
+                } else {
+                    value = value.map(sub => String(sub).trim())
                 }
-                this.data.tags = tags
+                this.data[fieldName] = value
             }
+        },
+        save() {
+            // let tagsAny = this?.data?.tagsAny
+            // if (tagsAny) {
+            //     tagsAny = tagsAny.split(',')
+            //     if (tagsAny.length < 1 || !tagsAny[0]) {
+            //         tagsAny = null
+            //     }
+            //     this.data.tagsAny = tagsAny
+            // }
+            this.split('tagsAny')
+            this.split('tagsArray')
             this.$emit('saveCb', this.data)
         },
         rollbackChanges() {

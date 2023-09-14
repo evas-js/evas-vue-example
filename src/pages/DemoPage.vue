@@ -17,7 +17,7 @@ export default {
                 'id', 'name', 
                 // 'email', 
                 // 'type', 'role', 
-                'tags',
+                'tagAny', 'tagsAny', 'tagsArray',
                 // 'referer_id', 'referer.name',
             ],
         }
