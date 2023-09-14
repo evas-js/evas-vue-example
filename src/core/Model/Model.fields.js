@@ -12,6 +12,7 @@ import { FieldsUnion } from '../Field/FieldsUnion.js'
 
 /**
  * Установка полей модели.
+ * @return Array
  */
 Model.setFields = function () {
     return []
@@ -80,7 +81,7 @@ Model.fieldNames = function () {
 }
 
 /**
- * Получнеие поля.
+ * Получение поля по имени.
  * @param string имя поля
  * @return Field
  */
@@ -93,7 +94,7 @@ Model.prototype.$field = function (name) {
 }
 
 /**
- * Получнеие опций поля.
+ * Получение опций поля.
  * @param string имя поля
  * @return Object
  */
@@ -129,7 +130,9 @@ Model.eachFields = function (cb, names) {
     return false
 }
 
-// set fields
+
+// Установка полей
+
 Model.attr = function (_default) {
     return new FieldBuilder({ _default })
 }

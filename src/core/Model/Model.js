@@ -94,6 +94,7 @@ Model.prototype.$beforeNew = function () {}
 require('./Model.api.js')
 require('./Model.crud.js')
 require('./Model.fields.js')
+require('./Model.fields.view.js')
 require('./Model.relations.js')
 require('./Model.state.js')
 require('./Model.store.js')

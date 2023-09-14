@@ -2,7 +2,6 @@
  * Variable field.
  * @package evas-vue
  * @author Egor Vasyakin <egor@evas-php.com>
- * @author Evgeny Shmakov
  * @license CC-BY-4.0
  */
 
