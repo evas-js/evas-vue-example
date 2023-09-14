@@ -92,34 +92,10 @@ Model.prototype.$isDirtyRelateds = function (relation) {
 Model.prototype.$dirtyFields = function (names) {
     let dirty = []
     this.constructor.eachFields((field) => {
-        if (this.$isDirtyField(field.name)) {
-            // console.log(
-            //     'cb',
-            //     field.name,
-            //     this.isDirtyField(field.name),
-            //     this.$state[field.name]
-            // )
-            dirty.push(field.name)
-        }
+        if (this.$isDirtyField(field.name)) dirty.push(field.name)
     }, names)
     this.constructor.eachRelations((relation) => {
-        // if (this.isDirtyField(relation.name)) {
-        if (this.$isDirtyRelateds(relation)) {
-            // logger.line(
-            //     '$dirtyFields relations',
-            //     relation.name,
-            //     // this.isDirtyField(relation.name),
-            //     // this.$state[relation.name]
-            //     this.$state[relation.name]?.[relation.foreign],
-            //     this[relation.name]?.[relation.foreign],
-            //     relation,
-            //     'localKey',
-            //     this.$state[relation.local],
-            //     this[relation.local]
-            // )
-            // if (this[relation.local])
-            dirty.push(relation.name)
-        }
+        if (this.$isDirtyRelateds(relation)) dirty.push(relation.name)
     }, names)
     return dirty
 }

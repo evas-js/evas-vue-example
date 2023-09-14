@@ -28,20 +28,7 @@ Model.fields = function () {
     if (this.isRootModel()) return {}
     if (!this._fields) {
         this._fields = {}
-        // this._fields = new Field
-        // console.log(this._fields.name('123').min(3).max(10))
-        let fields = this.setFields()
-        this._fields = this.buildFields(fields)
-        // for (let name in fields) {
-        //     let field = fields[name]
-        //     if (field instanceof FieldBuilder) {
-        //         field = new Field(field.export())
-        //     }
-        //     if (field instanceof Field) {
-        //         field.name = name
-        //         this._fields[name] = field
-        //     }
-        // }
+        this._fields = this.buildFields(this.setFields())
     }
     return this._fields
 }
@@ -53,6 +40,7 @@ Model.buildFields = function (fields, name = null) {
     let resultFields = {}
     for (let key in fields) {
         let field = fields[key]
+
         if (field instanceof FieldsUnion) {
             field.fields = this.buildFields(field.fields, key)
         }
@@ -67,6 +55,10 @@ Model.buildFields = function (fields, name = null) {
 
                 if (field.itemOf instanceof FieldsUnion) {
                     field.itemOf.fields = this.buildFields(field.itemOf.fields, key)
+                }
+
+                if (field.itemOf instanceof Field || field.itemOf instanceof FieldsUnion) {
+                    field.itemOf.name = name || key
                 }
             }
         }

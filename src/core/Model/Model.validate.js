@@ -50,52 +50,29 @@ Model.prototype.$clearErrors = function () {
 /**
  * Валидация записи.
  */
-Model.prototype.$validate = function () {
+Model.prototype.$validate = function (fieldNames = null) {
     return logger.methodCall(`${this.$entityName}{${this.$id}}.$validate`, arguments, () => {
         this.$clearErrors()
         this.constructor.eachFields((field) => {
-            // if (!field.isValid(this[field.name])) {
-            //     this.constructor.handleValidateError(field, field.error)
-            //     this.$errors.push(field.error)
-            // }
-            console.log('field instanceof FieldsUnion', field instanceof FieldsUnion, field)
-            console.log('this.$dirtyFields()', this.$dirtyFields())
+            if (!(field instanceof FieldsUnion || field instanceof Field)) return
 
-            if (!field.isValid(this[field.name]) && (field instanceof FieldsUnion || field instanceof Field)) {
+            if (!field.isValid(this[field.name])) {
                 this.constructor.handleValidateError(field, field.error)
                 this.$errors.push(field.error)
             }
 
             if (Array.isArray(field.value) && field.itemOf) {
-                if (field.itemOf instanceof FieldsUnion) {
-                    field.value.forEach(item => {
-                        // field.itemOf.name = `${field.name} [${index}]`
-                        if (!field.itemOf.isValid(item)) {
-                            this.constructor.handleValidateError(field.itemOf, field.itemOf.error)
-                            this.$errors.push(field.itemOf.error)
-                        }
-                    })
-                }
-
-                if (field.itemOf instanceof Field) {
-
-                    this[field.name] = field.value = field.value.map(item => {
-                        // field.itemOf.name = `${field.name} [${index}]`
-                        field.itemOf.name = field.name
-
-                        if (!field.itemOf.isValid(item)) {
-                            this.constructor.handleValidateError(field.itemOf, field.itemOf.error)
-                            this.$errors.push(field.itemOf.error)
-                            return item
-                        }
-
-                        return field.itemOf.convertType(item)
-                    })
-                }
+                this[field.name] = field.value = field.value.map(item => {
+                    // field.itemOf.name = `${field.name} [${index}]`
+                    if (!field.itemOf.isValid(item)) {
+                        this.constructor.handleValidateError(field.itemOf, field.itemOf.error)
+                        this.$errors.push(field.itemOf.error)
+                    }
+                    return field.itemOf.convertType(item)
+                })
             }
 
-
-        }, this.$dirtyFields())
+        }, fieldNames ?? this.$dirtyFields())
         return this.$errors.length < 1
     })
 }
@@ -103,14 +80,20 @@ Model.prototype.$validate = function () {
 /**
  * Валидация записи/записей.
  */
-Model.validate = function (entity) {
+Model.validate = function (entity, fieldNames = null) {
     if (Array.isArray(entity)) {
-        entity.forEach((_entity) => this.validate(_entity))
+        entity.forEach((_entity) => this.validate(_entity, fieldNames))
     }
     else if (entity && entity instanceof this) {
-        return entity.$validate()
+        return entity.$validate(fieldNames)
     }
     else if (entity && 'object' === typeof entity) {
-        return (new this(entity)).$validate()
+        return (new this(entity)).$validate(fieldNames)
     }
+    console.warn(
+        `${this.entityName}.validate() argument 1`
+        + ' must be an object or an array of the objects'
+        + `, given:`, entity
+    )
+    return false
 }

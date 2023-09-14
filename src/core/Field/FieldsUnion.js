@@ -1,4 +1,13 @@
+/**
+ * Variable field.
+ * @package evas-vue
+ * @author Egor Vasyakin <egor@evas-php.com>
+ * @author Evgeny Shmakov
+ * @license CC-BY-4.0
+ */
+
 export class FieldsUnion {
+    name
     type
     fields
     _required
@@ -9,7 +18,11 @@ export class FieldsUnion {
         this.fields = fields
     }
 
-    required(value) {
+    required(value = true) {
+        this._required = value
+        return this
+    }
+    nullable(value = false) {
         this._required = value
         return this
     }
@@ -49,5 +62,25 @@ export class FieldsUnion {
             return false
         }
         return count === 1 ? true : false
+    }
+
+
+    /**
+     * Конвертация типа значения.
+     * @param mixed значение
+     * @return mixed значение
+     */
+    convertType(value) {
+        for (let key in this.fields) {
+            if (this.fields[key].isValid(value)) {
+                return this.fields[key].convertTypeWithDefault(value)
+            }
+        }
+        return value ?? null
+    }
+
+
+    convertTypeWithDefault(value) {
+        return this.convertType(value)
     }
 }

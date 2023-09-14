@@ -7,7 +7,6 @@
 
 import { logger } from '../Log.js'
 import { Query } from '../Query.js'
-import { FieldsUnion } from '../Field/FieldsUnion.js'
 
 export class Model {
     constructor (data, afterFetch = true) {
@@ -48,20 +47,6 @@ Object.defineProperty(Model.prototype, '$id', {
 })
 
 /**
- * Установка значения поля .
- */
-Model.prototype.$setFieldValueWithConvertedType = function (field, data) {
-    // this[field.name] = field.convertType(undefined !== data[field.name]
-    //     ? data[field.name]
-    //     : field.getDefault())
-    this[field.name] = field.convertTypeWithDefault(data[field.name])
-    // logger.keyValue(
-    //     `$setFieldValueWithConvertedType ${this.$entityName}{${this.$id}}.${field.name}`, 
-    //     this[field.name]
-    // )
-}
-
-/**
  * Заполнение свойств записи.
  * @param Object данные [имя поля/связи => значение]
  */
@@ -80,25 +65,8 @@ Model.prototype._$fillFields = function (data) {
     const id = this.$id || data[this.constructor.primary]
     logger.returnGroup(() => {
         this.constructor.eachFields((field) => {
-            if (field instanceof FieldsUnion) {
-                /**
-                 * @todo Поправить!!!
-                 */
-                let finded = false
-                for (let key in field.fields) {
-                    let _field = field.fields[key]
-                    if (_field.isValid(data[_field.name])) {
-                        this.$setFieldValueWithConvertedType(_field, data)
-                        finded = true
-                        break
-                    }
-                }
-                if (!finded) {
-                    this[field.name] = data[field.name]
-                }
-            } else {
-                this.$setFieldValueWithConvertedType(field, data)
-            }
+            // конвертируем тип значения
+            this[field.name] = field.convertTypeWithDefault(data[field.name])
             logger.keyValue(`${this.$entityName}{${id}}.${field.name}`, this[field.name])
         })
     }, 'fill in the fields')
@@ -111,13 +79,11 @@ Model.prototype._$fillRelatons = function (data) {
     const id = this.$id || data[this.constructor.primary]
     logger.returnGroup(() => {
         this.constructor.eachRelations((field) => {
-            if (undefined !== data[field.name]) {
-                this[field.name] = data[field.name]
-                field.foreignModel.insertOrUpdate(data[field.name], true)
-                logger.keyValue(`${this.$entityName}{${id}}.${field.name}`, this[field.name])
-            } else {
-                // this[field.name] = field.default
-            }
+            if (undefined === data[field.name]) return
+            this[field.name] = data[field.name]
+            // записываем связанные записи в их модели
+            field.foreignModel.insertOrUpdate(data[field.name], true)
+            logger.keyValue(`${this.$entityName}{${id}}.${field.name}`, this[field.name])
         })
     }, 'fill in the relations')
 }
@@ -139,7 +105,7 @@ Model.query = function () {
 }
 Model.find = function (id) {
     let query = this.query()
-    // if (arguments.length > 1 && !Array.isArray(id)) id = arguments
+    if (arguments.length > 1 && !Array.isArray(id)) id = Array.from(arguments)
     return Array.isArray(id)
         ? query.whereIn(this.primary, id).get()
         : query.where(this.primary, id).first()

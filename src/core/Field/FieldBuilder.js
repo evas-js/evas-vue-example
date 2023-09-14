@@ -39,12 +39,12 @@ export class FieldBuilder {
         this._label = value
         return this
     }
-    required(value) {
+    required(value = true) {
         this._required = value
         return this
     }
-    nullable() {
-        this._required = false
+    nullable(value = false) {
+        this._required = value
         return this
     }
     type(value) {
