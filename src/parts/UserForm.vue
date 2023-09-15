@@ -3,8 +3,9 @@
         <fieldset>
             <legend>{{ title }}</legend>
             <div>
-                <input v-model="data.$id" placeholder="id" disabled>
-                <input v-model="data.name" placeholder="name">
+                <!-- <input v-model="data.$id" placeholder="id" disabled>
+                <input v-model="data.name" placeholder="name"> -->
+
                 <!-- <input v-model="data.email" placeholder="email"> -->
                 <!-- <input v-model.number="data.referer_id" placeholder="referer_id"> -->
                <!--  <select v-model="data.type">
@@ -19,9 +20,18 @@
                         {{ option }}
                     </option>
                 </select> -->
-                <input v-model="data.tagAny" placeholder="tagAny">
+
+                <!-- <input v-model="data.tagAny" placeholder="tagAny">
                 <input v-model="data.tagsAny" placeholder="tagsAny">
-                <input v-model="data.tagsArray" placeholder="tagsArray">
+                <input v-model="data.tagsArray" placeholder="tagsArray"> -->
+
+                <div v-for="fieldName in viewFields" :key="fieldName">
+                    <select v-if="hasFieldOptions(fieldName)" v-model="data[fieldName]" @change="changeValue">
+                        <option v-for="option in fieldOptions(fieldName)" :key="option">{{ option }}</option>
+                    </select>
+                    <input v-else v-model="data[fieldName]" :placeholder="fieldName" @input="changeValue" />
+                </div>
+
                 <div class="buttons">
                     <button @click.prevent="save" type="submit" :disabled="!isDirty">{{ btnText }}</button>
                     <button @click.prevent="rollbackChanges">{{ isDirty ? 'Cancel' : 'Close' }}</button>
@@ -54,6 +64,7 @@ export default {
     data() {
         return {
             // data: {}
+            viewFields: {},
         }
     },
     computed: {
@@ -88,6 +99,16 @@ export default {
         //         type: null,
         //     }
         // },
+        fieldOptions(fieldName) {
+            return this.model.fieldOptions(fieldName)
+        },
+        hasFieldOptions(fieldName) {
+            return Boolean(this.model?.field(fieldName)?.options)
+        },
+
+        changeValue() {
+            this.viewFields = this.data.$applyFieldsDisplayRules()
+        },
         split(fieldName) {
             let value = this?.data?.[fieldName]
             if ('string' === typeof value) {
@@ -125,8 +146,10 @@ export default {
             this.$emit('closeCb')
         },
     },
-    // created() {
-    //     this.setData()
-    // },
+    created() {
+        // this.setData()
+        this.viewFields = this.data.$applyFieldsDisplayRules()
+
+    },
 }
 </script>

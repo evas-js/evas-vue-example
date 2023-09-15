@@ -15,8 +15,8 @@ export class User extends Model {
             name: this.string('John Doe').min(3).max(10),
             // email: this.string('john_doe@example.com').pattern(/^.{2,}@.{2,}\..{2,}$/).nullable(),
             // create_time: this.string(() => (new Date).toString()).nullable(),
-            // type: this.number().options({1: 'admin', 2: 'sale', 3: 'dev'}).nullable(),
-            // role: this.string().options('admin', 'sale', 'front', 'back').nullable(),
+            type: this.number().options({1: 'admin', 2: 'sale', 3: 'dev'}).nullable(),
+            role: this.string().options('admin', 'sale', 'front', 'back').nullable(),
             // tags: this.array(this.string().pattern(/^\d+$/)).nullable(),
             tagAny: this.anyOf([
                 this.string().pattern(/^\d+$/),
@@ -27,10 +27,10 @@ export class User extends Model {
                     this.number().pattern(/^\d+$/),
                     this.string().pattern(/^[a-z]+$/)
                 ])
-            ).nullable(),
+            ).nullable(false),
             tagsArray: this.array(
                 this.string().pattern(/^\d+$/)
-            ).required(false),
+            ).required(true),
             // referer_id: this.number().nullable(),
         }
     }
@@ -44,9 +44,20 @@ export class User extends Model {
 
     static alwaysSend = [ 'referer_id' ]
 
-    static setView() {
+    static rulesForVariableDisplayOfFields = {
+        // tagsArray: [ 'tagAny', '123' ],
+        // tagsArray: [ 'name', 'John Doe' ],
+        tagsArray: [ 'type', 'admin' ],
+    }
+
+    static setDisplayRules() {
         return {
             name: 'string',
+            type: 'string',
+            role: 'string',
+            tagAny: 'string',
+            tagsAny: 'string',
+            tagsArray: 'string',
             email: 'string',
             create_time: 'string'
         }
