@@ -11,34 +11,37 @@ import { Model } from './Model.js'
  * Установка правил отображения полей модели.
  * @return Object
  */
-Model.setView = function () {
+Model.setDisplayRules = function () {
     return {}
 }
+
+Model._displayRules = null
 
 /**
  * Получение правил отображаемия поля или полей модели.
  * @param String|null имя поля
  * @return Object правила поля или полей
  */
-Model.view = function (part = null) {
-    const viewFields = part ? this.setView()[part] : this.setView()
-
-    // подтягиваем пропсы из полей
-    Object.keys(viewFields).forEach(fieldName => {
-        const field = this.field(fieldName)
-        if (field?.options) {
-            if ('string' === typeof viewFields[fieldName]) {
-                viewFields[fieldName] = {
-                    component: viewFields[fieldName],
+Model.displayRules = function (part = null) {
+    if (!this._displayRules) {
+        const rules = this.setDisplayRules()
+        // подтягиваем пропсы из полей
+        Object.keys(rules).forEach(fieldName => {
+            const field = this.field(fieldName)
+            if (field?.options) {
+                if ('string' === typeof rules[fieldName]) {
+                    rules[fieldName] = {
+                        component: rules[fieldName],
+                    }
                 }
+                if (!rules[fieldName].props) rules[fieldName].props = {}
+                rules[fieldName].props.options = field.options
             }
-            if (!viewFields[fieldName].props) viewFields[fieldName].props = {}
-
-            viewFields[fieldName].props.options = field.options
-        }
-    })
-
-    return viewFields
+        })
+        this._displayRules = rules
+    }
+    console.log('displayRules', this._displayRules)
+    return part ? this._displayRules[part] : this._displayRules
 }
 
 /**
@@ -47,7 +50,7 @@ Model.view = function (part = null) {
  * @return Object|Field
  */
 Model.fieldView = function (name) {
-    return this.view(name) || this.field(name)
+    return this.displayRules()[name] || this.field(name)
 }
 Model.prototype.$fieldView = function (name) {
     return this.constructor.fieldView(name)
@@ -57,8 +60,8 @@ Model.prototype.$fieldView = function (name) {
  * Получение имен полей с правилами отображением.
  * @return Array
  */
-Model.viewFieldNames = function () {
-    return Object.keys(this.view())
+Model.fieldNamesInDisplayRules = function () {
+    return Object.keys(this.displayRules())
 }
 
 /**
@@ -91,8 +94,8 @@ Model.rulesForVariableDisplayOfFields = {}
  * @param String|null имя поля
  * @return Array поля доступные к отображению
  */
-Model.prototype.$applyFieldsViewRules = function (part = null) {
-    return Object.keys(this.constructor.view(part)).reduce((viewFields, fieldName) => {
+Model.prototype.$applyFieldsDisplayRules = function (part = null) {
+    return Object.keys(this.constructor.displayRules(part)).reduce((viewFields, fieldName) => {
         const rule = this.constructor.rulesForVariableDisplayOfFields?.[fieldName]
         if (rule) {
             if (Array.isArray(rule)) {
@@ -104,20 +107,16 @@ Model.prototype.$applyFieldsViewRules = function (part = null) {
             } else if ('function' === typeof rule) {
                 rule(this) && viewFields.push(fieldName)
             }
+            console.log('rule', fieldName, rule, viewFields)
         } else {
-            if (part) {
-                console.log(part, viewFields);
-                viewFields.push(fieldName)
-            } else {
-                viewFields.push(fieldName)
-            }
+            viewFields.push(fieldName)
         }
         return viewFields
     }, [])
 }
 
-Model.prototype.$viewField = function () {
-    return this.$applyFieldsViewRules().map(fieldName => {
+Model.prototype.$fieldsToDisplay = function (part = null) {
+    return this.$applyFieldsDisplayRules(part).map(fieldName => {
         return {
             key: fieldName,
             value: this[fieldName],
