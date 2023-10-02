@@ -1,5 +1,5 @@
 /**
- * Data Model.
+ * Модель.
  * @package evas-vue-core
  * @author Egor Vasyakin <egor@evas-php.com>
  * @license CC-BY-4.0
@@ -88,9 +88,10 @@ Model.prototype._$fillRelatons = function (data) {
     }, 'fill in the relations')
 }
 
-// Model hooks
+// Хуки модели
 Model.prototype.$beforeNew = function () {}
 
+// Расширения модели
 require('./Model.api.js')
 require('./Model.crud.js')
 require('./Model.fields.js')
@@ -100,7 +101,7 @@ require('./Model.state.js')
 require('./Model.store.js')
 require('./Model.validate.js')
 
-// Model query
+// Расширение модели поддержкой запросов к хранилищу
 Model.query = function () {
     return new Query(this)
 }

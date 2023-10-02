@@ -1,5 +1,5 @@
 /**
- * Model fields.
+ * Расширение модели поддержкой полей.
  * @package evas-vue
  * @author Egor Vasyakin <egor@evas-php.com>
  * @license CC-BY-4.0
@@ -117,6 +117,12 @@ Model.prototype.$fieldOptions = function (name) {
     return this.constructor.fieldOptions(name)
 }
 
+/**
+ * Итеративная обработка полей колбэком.
+ * @param Function колбэк
+ * @param Array|null имена полей для обработки или все
+ * @return Boolean false - ничего не произошло, true - что-то произошло во время обработки
+ */
 Model.eachFields = function (cb, names) {
     if (!names) names = this.fieldNames()
     for (let name of names) {
@@ -133,6 +139,7 @@ Model.eachFields = function (cb, names) {
 
 // Установка полей
 
+// обычные поля
 Model.attr = function (_default) {
     return new FieldBuilder({ _default })
 }
@@ -152,6 +159,7 @@ Model.array = function (_itemOf, _default) {
 // set variable fields
 Model.anyOf = function (fields) {
     return new FieldsUnion('anyOf', fields)
+// вариативные поля
 }
 
 Model.oneOf = function (fields) {

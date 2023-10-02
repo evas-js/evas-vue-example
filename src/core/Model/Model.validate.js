@@ -1,5 +1,5 @@
 /**
- * Model validate.
+ * Расширение модели поддержкой валидации.
  * @package evas-vue
  * @author Egor Vasyakin <egor@evas-php.com>
  * @license CC-BY-4.0
