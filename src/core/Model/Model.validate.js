@@ -8,7 +8,7 @@
 import { logger } from '../Log.js'
 import { Model } from './Model.js'
 import { Field } from '../Field/Field.js'
-import { FieldsUnion } from '../Field/FieldsUnion.js'
+import { VariableField } from '../Field/VariableField.js'
 
 /** @var Function обработчик ошибок валидации */
 Model.validateErrorHandler = null
@@ -52,10 +52,10 @@ Model.prototype.$clearErrors = function () {
  */
 Model.prototype.$fieldNamesForValidate = function () {
     const dirty = this.$dirtyFields()
-    const viewed = this.$applyFieldsDisplayRules()
-    let fieldNames = dirty.filter(fieldName => viewed.includes(fieldName))
+    const rules = this.$applyFieldsDisplayRules()
+    let fieldNames = this.$isNew && rules.length ? dirty.filter(fieldName => rules.includes(fieldName)) : dirty
     // logger.keyValue('dirty', dirty)
-    // logger.keyValue('viewed', viewed)
+    // logger.keyValue('rules', rules)
     // logger.keyValue('fieldNames', fieldNames)
 
     // const registered = this.constructor.fieldNames()
@@ -77,7 +77,7 @@ Model.prototype.$validate = function (fieldNames = null) {
         if (!fieldNames) fieldNames = this.$fieldNamesForValidate()
         this.$clearErrors()
         this.constructor.eachFields((field) => {
-            if (!(field instanceof FieldsUnion || field instanceof Field)) return
+            if (!(field instanceof VariableField || field instanceof Field)) return
 
             if (!field.isValid(this[field.name])) {
                 this.constructor.handleValidateError(field, field.error)
