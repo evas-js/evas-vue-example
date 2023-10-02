@@ -109,11 +109,6 @@ export const Query = class {
         return this
     }
 
-    first() {
-        let rows = this.limit(1).get()
-        return rows.length > 0 ? rows[0] : null
-    }
-
     _groupBy(collection, iteratee) {
         return collection.reduce(function (records, record) {
             let key = iteratee(record)
@@ -209,7 +204,12 @@ export const Query = class {
         return rows
     }
 
-    get() {
+    first(fieldNames = null) {
+        let rows = this.limit(1).get(fieldNames)
+        return rows.length > 0 ? rows[0] : null
+    }
+
+    get(fieldNames = null) {
         // let rows = this.model.all()
 
         // where (filter)
@@ -254,6 +254,25 @@ export const Query = class {
                     }
                     row[relation.name] = relateds
                 })
+            })
+        }
+
+        // return concrete fieldNames
+        if (fieldNames) {
+            rows = rows.map(row => {
+                if (['string', 'number'].includes(typeof fieldNames)) {
+                    return row[fieldNames]
+                }
+                if (Array.isArray(fieldNames)) {
+                    return fieldNames.map((fieldName) => row[fieldName])
+                } 
+                if ('object' === typeof fieldNames) {
+                    const newRow = {}
+                    Object.entries(fieldNames).forEach(([alias, fieldName]) => {
+                        newRow[alias] = row[fieldName]
+                    })
+                    return newRow
+                }
             })
         }
 
