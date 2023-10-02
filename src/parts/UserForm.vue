@@ -25,12 +25,16 @@
                 <input v-model="data.tagsAny" placeholder="tagsAny">
                 <input v-model="data.tagsArray" placeholder="tagsArray"> -->
 
-                <div v-for="fieldName in viewFields" :key="fieldName">
-                    <select v-if="hasFieldOptions(fieldName)" v-model="data[fieldName]" @change="changeValue">
-                        <option v-for="option in fieldOptions(fieldName)" :key="option">{{ option }}</option>
-                    </select>
-                    <input v-else v-model="data[fieldName]" :placeholder="fieldName" @input="changeValue" />
-                </div>
+                <!-- <div v-for="displayFields, key in displayBlocks" :key="key"> -->
+
+                    <div v-for="fieldName in displayFields" :key="fieldName">
+                        <select v-if="hasFieldOptions(fieldName)" v-model="data[fieldName]" @change="changeValue">
+                            <option v-for="option in fieldOptions(fieldName)" :key="option">{{ option }}</option>
+                        </select>
+                        <input v-else v-model="data[fieldName]" :placeholder="fieldName" @input="changeValue" />
+                    </div>
+
+                <!-- </div> -->
 
                 <div class="buttons">
                     <button @click.prevent="save" type="submit" :disabled="!isDirty">{{ btnText }}</button>
@@ -64,25 +68,26 @@ export default {
     data() {
         return {
             // data: {}
-            viewFields: {},
+            displayFields: {},
+            displayBlocks: [],
         }
     },
     computed: {
         model() {
             return this.$models[this.modelName]
         },
-        typeOptions() {
-            if (!this.model) return []
-            let options = this.model.fieldOptions('type')
-            // options[options.length] = 'incorrect'
-            return options
-        },
-        roleOptions() {
-            if (!this.model) return []
-            let options = this.model.fieldOptions('role')
-            // options['incorrect'] = 'incorrect'
-            return options
-        },
+        // typeOptions() {
+        //     if (!this.model) return []
+        //     let options = this.model.fieldOptions('type')
+        //     // options[options.length] = 'incorrect'
+        //     return options
+        // },
+        // roleOptions() {
+        //     if (!this.model) return []
+        //     let options = this.model.fieldOptions('role')
+        //     // options['incorrect'] = 'incorrect'
+        //     return options
+        // },
         isDirty() {
             return this.entity ? this.entity.$isDirty : true
         },
@@ -107,7 +112,7 @@ export default {
         },
 
         changeValue() {
-            this.viewFields = this.data.$applyFieldsDisplayRules()
+            this.displayFields = this.data.$displayFields()
         },
         split(fieldName) {
             let value = this?.data?.[fieldName]
@@ -122,14 +127,6 @@ export default {
             }
         },
         save() {
-            // let tagsAny = this?.data?.tagsAny
-            // if (tagsAny) {
-            //     tagsAny = tagsAny.split(',')
-            //     if (tagsAny.length < 1 || !tagsAny[0]) {
-            //         tagsAny = null
-            //     }
-            //     this.data.tagsAny = tagsAny
-            // }
             this.split('tagsAny')
             this.split('tagsArray')
             this.$emit('saveCb', this.data)
@@ -148,8 +145,9 @@ export default {
     },
     created() {
         // this.setData()
-        this.viewFields = this.data.$applyFieldsDisplayRules()
 
+        // this.displayFields = this.data.$applyFieldsDisplayRules()
+        this.changeValue()
     },
 }
 </script>
