@@ -1,10 +1,12 @@
 * {box-sizing: border-box; margin: 0; outline: none; padding: 0; vertical-align: middle;}
 body {
     font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-size: 15px;
     -webkit-font-smoothing: antialiased;
     moz-osx-font-smoothing: grayscale;
 }
 
+form {text-align: left;}
 fieldset {background: #eee; border-radius: 5px;}
 input, textarea, select, button {border: solid transparent 1px; border-radius: 5px; padding: 5px 10px;}
 input, textarea, select {background: #fff; border-color: #ccc;}
@@ -18,12 +20,22 @@ table {border-collapse: collapse; margin: 10px 0; width: 100%;}
 td, th {border: solid #aaa 1px; padding: 5px 10px;}
 table tr {}
 table tr:nth-child(2n + 1) {background: #ddd;}
+table button + button {margin-left: 5px;}
 
 .forms {align-items: center; display: flex; gap: 10px;}
 .forms form {width: 50%;}
-.forms fieldset > div {align-items: flex-start; display: flex; flex-direction: column;}
-.forms fieldset > legend, .forms fieldset > div * {margin: 5px 15px;}
+.forms fieldset > div, 
+.forms fieldset .fieldset {align-items: flex-start; display: flex; gap: 10px;}
+.forms fieldset > div {margin: 15px; gap: 20px;}
+.forms fieldset .fields, 
+.forms fieldset .fieldset, 
+.forms fieldset .errors {flex-direction: column; gap: 10px;}
+.forms fieldset .errors > div {background: #bb444a; border-radius: 5px; color: #fff; font-weight: 500; line-height: 1.35em; padding: 5px 10px;}
+.forms fieldset .buttons {gap: 5px;}
+.forms fieldset > legend {margin: 5px 15px;}
 
+.fieldset {background: #ddd; border-radius: 5px; padding: 15px; width: 100%;}
+.field {align-items: center; display: flex; justify-content: space-between; width: 100%;}
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

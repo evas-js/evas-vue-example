@@ -13,7 +13,7 @@ export class User2 extends Model {
         return {
             id: this.number().nullable(),
             name: this.string('John Doe').min(3).max(10),
-            // email: this.string('john_doe@example.com').pattern(/^.{2,}@.{2,}\..{2,}$/).nullable(),
+            email: this.string('john_doe@example.com').pattern(/^.{2,}@.{2,}\..{2,}$/).required(),
             // create_time: this.string(() => (new Date).toString()).nullable(),
             type: this.number().options({1: 'admin', 2: 'sale', 3: 'dev'}).nullable(),
             role: this.string().options('admin', 'sale', 'front', 'back').nullable(),
@@ -21,16 +21,16 @@ export class User2 extends Model {
             tagAny: this.anyOf([
                 this.string().pattern(/^\d+$/),
                 this.string().pattern(/^[a-z]+$/)
-            ]),
+            ]).required(),
             tagsAny: this.array(
                 this.anyOf([
                     this.number().pattern(/^\d+$/),
                     this.string().pattern(/^[a-z]+$/)
                 ])
-            ).nullable(false),
+            ).required(),
             tagsArray: this.array(
                 this.string().pattern(/^\d+$/)
-            ).required(true),
+            ).required(),
             // referer_id: this.number().nullable(),
         }
     }
@@ -47,9 +47,9 @@ export class User2 extends Model {
     static rulesForVariableDisplayOfFields = {
         // tagsArray: [ 'tagAny', '123' ],
         // tagsArray: [ 'name', 'John Doe' ],
-        tagAny: [ 'type', 'admin' ],
-        tagsAny: [ 'type', 'admin' ],
-        tagsArray: [ 'type', 'admin' ],
+        tagAny: [ 'type', 1 ],
+        tagsAny: [ 'type', 1 ],
+        tagsArray: [ 'role', 'admin' ],
     }
 
     static setDisplayRules() {
@@ -66,7 +66,10 @@ export class User2 extends Model {
     }
 
     static setDisplayBlocks() {
-        return []
+        return [
+            ['name', 'email'],
+            ['type', 'tagAny', 'tagsAny', 'tagsArray'],
+        ]
     }
 
     // ..... Model .....

@@ -2,55 +2,47 @@
     <form>
         <fieldset>
             <legend>{{ title }}</legend>
-            <div>
-                <!-- <input v-model="data.$id" placeholder="id" disabled>
-                <input v-model="data.name" placeholder="name"> -->
+            <!-- <div> -->
 
-                <!-- <input v-model="data.email" placeholder="email"> -->
-                <!-- <input v-model.number="data.referer_id" placeholder="referer_id"> -->
-               <!--  <select v-model="data.type">
-                    <option disabled>Select type</option>
-                    <option v-for="option, key in typeOptions" :key="key" :value="key">
-                        {{ option }}
-                    </option>
-                </select> -->
-                <!-- <select v-model="data.role">
-                    <option disabled>Select role</option>
-                    <option v-for="option, key in roleOptions" :key="key" :value="key">
-                        {{ option }}
-                    </option>
-                </select> -->
-
-                <!-- <input v-model="data.tagAny" placeholder="tagAny">
-                <input v-model="data.tagsAny" placeholder="tagsAny">
-                <input v-model="data.tagsArray" placeholder="tagsArray"> -->
+            <div class="fields">
+                <FieldSet 
+                    :data="data"
+                    :displayFields="displayFields"
+                    :model="model"
+                    @changeValue="changeValue"
+                />
 
                 <!-- <div v-for="displayFields, key in displayBlocks" :key="key"> -->
 
-                    <div v-for="fieldName in displayFields" :key="fieldName">
+                    <!-- <div v-for="fieldName in displayFields" :key="fieldName">
                         <select v-if="hasFieldOptions(fieldName)" v-model="data[fieldName]" @change="changeValue">
-                            <option v-for="option in fieldOptions(fieldName)" :key="option">{{ option }}</option>
+                            <option v-for="option, key in fieldOptions(fieldName)" 
+                                :key="option" 
+                                :value="Array.isArray(fieldOptions(fieldName)) ? option : key"
+                            >{{ option }}</option>
                         </select>
                         <input v-else v-model="data[fieldName]" :placeholder="fieldName" @input="changeValue" />
-                    </div>
+                    </div> -->
 
                 <!-- </div> -->
-
-                <div class="buttons">
-                    <button @click.prevent="save" type="submit" :disabled="!isDirty">{{ btnText }}</button>
-                    <button @click.prevent="rollbackChanges">{{ isDirty ? 'Cancel' : 'Close' }}</button>
-                </div>
-                <div class="errors">
-                    <div v-for="error,i in data.$errors" :key="i">
-                        {{ error }}
-                    </div>
+            </div>
+            <div class="buttons">
+                <button @click.prevent="save" type="submit" :disabled="!isDirty">{{ btnText }}</button>
+                <button @click.prevent="rollbackChanges">{{ isDirty ? 'Cancel' : 'Close' }}</button>
+            </div>
+            <div class="errors">
+                <div v-for="error,i in data.$errors" :key="i">
+                    {{ error }}
                 </div>
             </div>
+            <!-- </div> -->
         </fieldset>
     </form>
 </template>
 
 <script>
+import FieldSet from './FieldSet.vue'
+
 export default {
     props: {
         modelName: { type: String },
@@ -59,12 +51,6 @@ export default {
         btnText: { type: String },
     },
     emits: ['saveCb', 'closeCb'],
-    watch: {
-        entity() {
-            console.log('watch entity', this.entity)
-            // this.setData()
-        },
-    },
     data() {
         return {
             // data: {}
@@ -95,6 +81,13 @@ export default {
             return this.entity || new this.model
         },
     },
+    watch: {
+        entity() {
+            console.log('watch entity', this.entity)
+            this.updateDisplayFields()
+            // this.setData()
+        },
+    },
     methods: {
         // setData() {
         //     this.data = this.entity || {
@@ -104,15 +97,20 @@ export default {
         //         type: null,
         //     }
         // },
-        fieldOptions(fieldName) {
-            return this.model.fieldOptions(fieldName)
-        },
-        hasFieldOptions(fieldName) {
-            return Boolean(this.model?.field(fieldName)?.options)
-        },
-
-        changeValue() {
+        // fieldOptions(fieldName) {
+        //     return this.model.fieldOptions(fieldName)
+        // },
+        // hasFieldOptions(fieldName) {
+        //     return Boolean(this.model?.field(fieldName)?.options)
+        // },
+        updateDisplayFields() {
             this.displayFields = this.data.$displayFields()
+        },
+        // changeValue(fieldName, value) {
+        changeValue() {
+            // console.log('EditForm.changeValue()', fieldName, value)
+            // this.data[fieldName] = value
+            this.updateDisplayFields()
         },
         split(fieldName) {
             let value = this?.data?.[fieldName]
@@ -145,9 +143,8 @@ export default {
     },
     created() {
         // this.setData()
-
-        // this.displayFields = this.data.$applyFieldsDisplayRules()
-        this.changeValue()
+        this.updateDisplayFields()
     },
+    components: { FieldSet }
 }
 </script>

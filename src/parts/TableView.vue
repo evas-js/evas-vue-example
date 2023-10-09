@@ -29,14 +29,14 @@
     </table>
 
     <div class="forms">
-        <UserForm
+        <EditForm
             :modelName="modelName"
             :entity="inserting"
             :title="'Add '+ modelName"
             btnText="+ Add"
             @saveCb="add"
         />
-        <UserForm v-if="editing" 
+        <EditForm v-if="editing" 
             :modelName="modelName"
             :entity="editing" :title="'Edit '+ modelName +' #'+ editing.id"
             btnText="Save"
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import UserForm from './UserForm.vue'
+import EditForm from './EditForm.vue'
 
 export default {
     props: {
@@ -76,7 +76,8 @@ export default {
     },
     methods: {
         add(data) {
-            this.inserting = new this.model(data)
+            this.inserting = data
+            // this.inserting = new this.model(data)
             this.inserting.$save(() => {
                 console.log('!saved')
                 if (this.inserting.$errors.length < 1) this.inserting = null
@@ -109,6 +110,6 @@ export default {
         this.fetchList()
         this.model.setValidateErrorHandler(this.addError)
     },
-    components: { UserForm }
+    components: { EditForm }
 }
 </script>
