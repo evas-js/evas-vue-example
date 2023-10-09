@@ -29,4 +29,13 @@ export class Fieldable
         this.display = display
         return this
     }
+
+    /**
+     * Проверка на пустое значение.
+     * @param mixed|null значение
+     * @return Boolean
+     */
+    isEmptyValue(value) {
+        return [null, undefined].includes(arguments.length > 0 ? value : this.value)
+    }
 }

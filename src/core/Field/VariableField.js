@@ -39,6 +39,11 @@ export class VariableField extends Fieldable {
      */
     isValid(value) {
         this.errors = []
+        // if (this.required && this.isEmptyValue()) {
+        //     console.error('Atata!')
+        //     this.errors.push('Atata!')
+        //     return false
+        // }
         for (let key in this.fields) {
             this.fields[key].isValid(value)
             this.errors.push(this.fields[key].error)
@@ -78,7 +83,7 @@ export class VariableField extends Fieldable {
                 return this.fields[key].convertTypeWithDefault(value)
             }
         }
-        return value ?? null
+        return value
     }
     convertTypeWithDefault(value) {
         return this.convertType(value)

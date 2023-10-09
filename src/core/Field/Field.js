@@ -75,10 +75,6 @@ export class Field extends Fieldable {
         setProps(this, props)
     }
 
-    isEmptyValue(value) {
-        return [null, undefined].includes(arguments.length > 0 ? value : this.value)
-    }
-
     /**
      * Получение значения по умолчанию.
      * @return mixed
@@ -93,7 +89,7 @@ export class Field extends Fieldable {
      * @return mixed значение
      */
     convertType(value) {
-        if (!this.required && this.isEmptyValue(value)) return null
+        if (!this.required && this.isEmptyValue(value)) return value
         if (this.isArrayType) return Array.isArray(value) ? Array.from(value) : value;
         if (this.isStringType) return value == null ? '' : String(value)
         if (this.isNumberType) {
