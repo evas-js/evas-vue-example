@@ -47,7 +47,7 @@ Model.buildFields = function (fields, name = null) {
         let field = fields[key]
 
         if (field instanceof VariableFieldBuilder) {
-            field = new VariableFieldBuilder(field.export())
+            field = new VariableField(field.export())
         }
 
         if (field instanceof VariableField) {

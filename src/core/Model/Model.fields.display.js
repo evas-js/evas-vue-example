@@ -22,6 +22,8 @@ Model.setDisplayRules = function () {
 Model.rulesForVariableDisplayOfFields = {}
 
 Model._displayRules = null
+Model._displayBlocks = null
+Model._displayGroups = null
 
 /**
  * Получение правил отображаемия поля или полей модели.
@@ -35,7 +37,9 @@ Model.displayRules = function (group = null) {
         Object.keys(rules).forEach(fieldName => {
             const field = this.field(fieldName)
             if (!field) {
+                console.log(this.fields())
                 console.error(`Field for displayRule with name "${fieldName}" does not exists`)
+                delete rules[fieldName]
                 return
             }
             let fieldRules = rules[fieldName]
@@ -72,10 +76,15 @@ Model.prototype.$applyFieldsDisplayRules = function (group = null) {
         if (rule) {
             if (Array.isArray(rule)) {
                 const [parentFieldName, parentValue] = rule
-                const isShow =
-                    viewFields.includes(parentFieldName) &&
-                    this?.[parentFieldName] === parentValue
-                if (isShow) viewFields.push(fieldName)
+                if (viewFields.includes(parentFieldName)) {
+                    let expected = this?.[parentFieldName]
+                    expected = this.$field(parentFieldName).convertTypeWithDefault(expected)
+                    if (expected === parentValue) viewFields.push(fieldName)
+                }
+                // const isShow =
+                //     viewFields.includes(parentFieldName) &&
+                //     this?.[parentFieldName] === parentValue
+                // if (isShow) viewFields.push(fieldName)
             } else if ('function' === typeof rule) {
                 rule(this) && viewFields.push(fieldName)
             }
@@ -87,7 +96,7 @@ Model.prototype.$applyFieldsDisplayRules = function (group = null) {
 }
 
 /** @var String|Number|null отображаемая группа полей */
-Model.prototype.displayGroup = null
+Model.prototype.$displayGroup = null
 
 /**
  * Получение полей для отображения.
@@ -96,7 +105,7 @@ Model.prototype.displayGroup = null
  */
 Model.prototype.$displayFields = function (group = null) {
     return logger.methodCall(`${this.$entityName}{${this.$id}}.$displayFields`, arguments, () => {
-        this.displayGroup = group
+        this.$displayGroup = group
         const displayFields = this.$applyFieldsDisplayRules(group)
         logger.keyValue('$displayFields', displayFields)
         return displayFields
@@ -114,6 +123,10 @@ Model.prototype.$displayFieldsWithPrepare = function (cb = null, group = null) {
         return cb ? cb(fieldProps) : fieldProps
     })
 }
+
+// Model.prototype.$displayFieldsByBlocks = function (group = null) {
+//     // 
+// }
 
 
 // /**
