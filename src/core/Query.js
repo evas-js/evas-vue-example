@@ -15,6 +15,7 @@ export const Query = class {
         '>=':   (col, val) => { return col >= val }, 
         '<':    (col, val) => { return col < val },
         '<=':   (col, val) => { return col <= val }, 
+        // in - whereIn
     }
 
     model
@@ -32,6 +33,9 @@ export const Query = class {
         if (arguments.length === 3) {
             value = condition
             condition = '='
+        }
+        if ('in' === condition) {
+            return this._whereIn(isOr, column, value)
         }
         this._wheres.push({ column, condition, value, isOr })
         return this
