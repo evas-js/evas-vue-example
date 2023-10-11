@@ -1,9 +1,9 @@
 <template>
     <div class="fieldset">
-        <template v-for="fieldName, name in realDisplayFields" :key="fieldName">
+        <template v-for="fieldName, name in realDisplayFields" :key="name">
             <template v-if="isFieldGroup(fieldName)">
                 {{ name }}
-                {{ fieldName }}
+                <!-- {{ fieldName }} -->
                 <FieldSet v-if="isShown(fieldName)"
                     :data="data"
                     :displayFields="fieldName.items"
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { FieldGroup } from '@/core/Field/FieldGroup.js'
+import { Group } from '@/core/Group/Tabs.js'
 
 // @change="changeValue(fieldName, $event)"
 export default {
@@ -56,7 +56,7 @@ export default {
             return Boolean(this.model?.field(fieldName)?.options)
         },
         isFieldGroup(fieldName) {
-            return fieldName instanceof FieldGroup
+            return fieldName instanceof Group
         },
         // changeValue(fieldName, e) {
         //     console.log(fieldName, e.target.value)

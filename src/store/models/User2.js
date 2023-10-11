@@ -81,18 +81,33 @@ export class User2 extends Model {
         //     ],
         //     'other': ['type', 'role', 'tagAny', 'tagsAny', 'tagsArray'],
         // }
-        return [
-            this.displayGroup([
-                'name', 
-                'email', 
-                this.displayGroup([
-                    'create_time'
-                ], 'asd').canHide(),
-            ], 'general').canHide(),
-            this.displayGroup([
-                'type', 'role', 'tagAny', 'tagsAny', 'tagsArray'
-            ], 'other').canHide(),
-        ]
+
+        return this.tabs({
+            'general': [
+                'name', 'email',
+                // this.block(['create_time'])
+                ['create_time'],
+            ],
+            'system': [
+                // this.block(['type', 'role']),
+                ['type', 'tagAny', 'tagsAny'],
+                'role', 'tagsArray',
+            ]
+        })
+
+        // return [
+        //     this.displayGroup([
+        //         'name', 
+        //         'email', 
+        //         this.displayGroup([
+        //             'create_time'
+        //         ], 'asd').canHide(),
+        //     ], 'general').canHide(),
+        //     this.displayGroup([
+        //         'type', 'role', 'tagAny', 'tagsAny', 'tagsArray'
+        //     ], 'other').canHide(),
+        // ]
+
         // return this.tabs({
         //     'web': [],
         //     'mail': this.blocks([

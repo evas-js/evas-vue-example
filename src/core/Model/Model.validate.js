@@ -53,9 +53,13 @@ Model.prototype.$clearErrors = function () {
 Model.prototype.$fieldNamesForValidate = function () {
     const dirty = this.$dirtyFields()
     const rules = this.$applyFieldsDisplayRules()
-    let fieldNames = this.$isNew && rules.length ? dirty.filter(fieldName => rules.includes(fieldName)) : dirty
-    // logger.keyValue('dirty', dirty)
-    // logger.keyValue('rules', rules)
+    // const rules = this.$displayFields()
+    logger.keyValue('dirty', dirty)
+    logger.keyValue('rules', rules)
+    logger.keyValue('this', this)
+    logger.keyValue('this.$state', this.$state)
+    // let fieldNames = this.$isNew && rules.length ? dirty.filter(fieldName => rules.includes(fieldName)) : dirty
+    let fieldNames = this.$isNew && rules.length ? rules : dirty
     // logger.keyValue('fieldNames', fieldNames)
 
     // const registered = this.constructor.fieldNames()
@@ -78,6 +82,7 @@ Model.prototype.$validate = function (fieldNames = null) {
         this.$clearErrors()
         this.constructor.eachFields((field) => {
             if (!(field instanceof VariableField || field instanceof Field)) return
+            console.warn(field.name, this[field.name])
 
             if (!field.isValid(this[field.name])) {
                 this.constructor.handleValidateError(field, field.error)

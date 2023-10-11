@@ -108,6 +108,13 @@ export default {
             // this.displayFields = this.data.$displayFields()
             // this.displayFields = this.data.$fieldGroup([0])
             this.displayFields = this.data.$fieldGroup()
+            // this.displayFields = this.data.$fieldGroup('general')
+            // this.displayFields = this.data.$fieldGroup('general', 2)
+            // this.displayFields = this.data.$fieldGroup('general', 'name')
+            // this.displayFields = this.data.$fieldGroup('general', 2, 'create_time')
+            // this.displayFields = this.data.$fieldGroup('system')
+            // this.displayFields = this.data.$fieldGroup('system', 0)
+            console.warn(this.displayFields)
             // this.displayFields = this.data.$applyFieldsDisplayRules(
             //     this.data.$fieldGroup([1])
             // )
