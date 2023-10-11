@@ -64,13 +64,68 @@ export class User2 extends Model {
             create_time: 'string'
         }
     }
-
-    static setDisplayBlocks() {
+    static setFieldGrouping() {
+        // return [
+        //     this.displayBlock([
+        //         'name', 'email', 'create_time'
+        //     ]),
+        //     this.displayBlock([
+        //         'type', 'role', 'tagAny', 'tagsAny', 'tagsArray'
+        //     ]),
+        // ]
+        // return {
+        //     'general': [
+        //         'name', 'email', [
+        //             'create_time'
+        //         ],
+        //     ],
+        //     'other': ['type', 'role', 'tagAny', 'tagsAny', 'tagsArray'],
+        // }
         return [
-            ['name', 'email'],
-            ['type', 'tagAny', 'tagsAny', 'tagsArray'],
+            this.displayGroup([
+                'name', 
+                'email', 
+                this.displayGroup([
+                    'create_time'
+                ], 'asd').canHide(),
+            ], 'general').canHide(),
+            this.displayGroup([
+                'type', 'role', 'tagAny', 'tagsAny', 'tagsArray'
+            ], 'other').canHide(),
         ]
+        // return this.tabs({
+        //     'web': [],
+        //     'mail': this.blocks([
+        //         []
+        //     ]),
+        // })
+
+        // |----------
+        // | [input]
+        // | [input]
+        // |----------
+        //  [input]
+        //  [input]
+        //  [input]
+        // |----------
+        // | [input]
+        // | [input]
+        // |----------
+
+        // |----------
+        // | [tabs]
+        // |----------
+        // | [input]
+        // | [input]
+        // |----------
     }
+
+    // static setDisplayBlocks() {
+    //     return [
+    //         ['name', 'email', 'create_time',
+    //         ['type', 'role', 'tagAny', 'tagsAny', 'tagsArray'],
+    //     ]
+    // }
 
     // ..... Model .....
 

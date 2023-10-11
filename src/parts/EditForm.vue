@@ -104,7 +104,14 @@ export default {
         //     return Boolean(this.model?.field(fieldName)?.options)
         // },
         updateDisplayFields() {
-            this.displayFields = this.data.$displayFields()
+            console.log('updateDisplayFields')
+            // this.displayFields = this.data.$displayFields()
+            // this.displayFields = this.data.$fieldGroup([0])
+            this.displayFields = this.data.$fieldGroup()
+            // this.displayFields = this.data.$applyFieldsDisplayRules(
+            //     this.data.$fieldGroup([1])
+            // )
+            // console.error(this.data.$fieldGroup([0]))
         },
         // changeValue(fieldName, value) {
         changeValue() {

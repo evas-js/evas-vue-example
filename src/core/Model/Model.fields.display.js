@@ -7,6 +7,7 @@
 
 import { logger } from '../Log.js'
 import { Model } from './Model.js'
+import { FieldGroup } from '../Field/FieldGroup.js'
 
 /**
  * Установка правил отображения полей модели.
@@ -14,6 +15,88 @@ import { Model } from './Model.js'
  */
 Model.setDisplayRules = function () {
     return {}
+}
+
+Model.setFieldGrouping = function () {
+    return {}
+}
+
+Model._fieldGrouping = null
+
+Model.fieldGrouping = function () {
+    if (!this._fieldGrouping) {
+        this._fieldGrouping = new FieldGroup(
+            this.buildFieldGrouping(this.setFieldGrouping() ?? {})
+        )
+        console.log("fieldGrouping builded\n-----")
+        // this._fieldGrouping = this.buildFieldGrouping(this.setFieldGrouping() ?? {})
+        // this._fieldGrouping = new FieldGroup(this.setFieldGrouping() ?? {})
+    }
+    return this._fieldGrouping
+}
+
+Model.buildFieldGrouping = function (grouping) {
+    const result = {}
+    const typeNumber = Array.isArray(grouping)
+    Object.entries(grouping).forEach(([key, item]) => {
+        // if ('string' === typeof item) {
+        //     item = this.field(item)
+        // } else 
+        if (
+            Array.isArray(item)
+             || ('object' === typeof item && !(item instanceof FieldGroup))
+        ) {
+            item = new FieldGroup(item)
+        }
+        if (item instanceof FieldGroup) {
+            item.items = this.buildFieldGrouping(item.items)
+            item.name = typeNumber ? Number(key) : String(key)
+            console.log(item)
+        }
+        result[key] = item
+    })
+    return result
+}
+
+Model.fieldGroup = function (names) {
+// Model.fieldGroup = function () {
+    // const grouping = this.fieldGrouping()
+    // if (!names) return grouping.items
+    // if (grouping )
+    const grouping = this.fieldGrouping().next(names)
+    console.log('fieldGroup', grouping)
+    return grouping
+    // return this.fieldGrouping()
+}
+Model.prototype.$fieldGroup = function (names) {
+    return this.constructor.fieldGroup(names)
+}
+
+// Model.displayBlocks = function (blocks) {
+//     if (Array.isArray(blocks)) {
+//         blocks = blocks.map((block, i) => {
+//             return this.setDisplayBlock(i, block)
+//         })
+//     } else if (blocks && 'object' === typeof blocks) {
+//         blocks = Object.entries(blocks).map(([key, value]) => {
+//             return this.setDisplayBlock(key, value)
+//         })
+//     }
+// }
+
+// Model.displayBlock = function (name, items) {
+//     if (arguments.length < 2) {
+//         items = name
+//         name = 0
+//     }
+//     return new FieldBlock(name, items)
+// }
+Model.displayGroup = function (name, items) {
+    if (arguments.length < 2) {
+        items = name
+        name = 0
+    }
+    return new FieldGroup(name, items)
 }
 
 /**
@@ -70,8 +153,9 @@ Model.fieldNamesInDisplayRules = function () {
  * @param String|Number|null отображаемая группа полей
  * @return Array поля доступные к отображению
  */
-Model.prototype.$applyFieldsDisplayRules = function (group = null) {
-    return Object.keys(this.constructor.displayRules(group)).reduce((viewFields, fieldName) => {
+Model.prototype.$applyFieldsDisplayRules = function (fieldNames = null) {
+    if (!fieldNames) fieldNames = this.constructor.rulesForVariableDisplayOfFields
+    return Object.values(fieldNames).reduce((viewFields, fieldName) => {
         const rule = this.constructor.rulesForVariableDisplayOfFields?.[fieldName]
         if (rule) {
             if (Array.isArray(rule)) {

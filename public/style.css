@@ -35,6 +35,7 @@ table button + button {margin-left: 5px;}
 .forms fieldset > legend {margin: 5px 15px;}
 
 .fieldset {background: #ddd; border-radius: 5px; padding: 15px; width: 100%;}
+.fieldset {border: solid #aaa 1px;}
 .field {align-items: center; display: flex; justify-content: space-between; width: 100%;}
 
 #app {
