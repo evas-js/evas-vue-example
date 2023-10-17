@@ -1,16 +1,17 @@
 <template>
     <div class="fieldset">
-        <template v-for="fieldName, name in realDisplayFields" :key="name">
+        <template v-for="fieldName in realDisplayFields" :key="fieldName">
             <template v-if="isFieldGroup(fieldName)">
-                {{ name }}
+                <span v-if="isTab(fieldName)" class="tabName" :class="{selected: isSelected(fieldName)}" @click="selectTab(fieldName)">
+                    {{ fieldName.name }}
+                </span>
                 <!-- {{ fieldName }} -->
-                <FieldSet v-if="isShown(fieldName)"
+                <FieldSet v-if="isSelected(fieldName)"
                     :data="data"
                     :displayFields="fieldName.items"
                     :model="model"
                     @changeValue="changeValue"
                 />
-                <span @click="hide(fieldName)">Hide</span>
             </template>
             <div v-else class="field">
                 <span class="label">{{ fieldName }}</span>
@@ -27,7 +28,7 @@
 </template>
 
 <script>
-import { Group } from '@/core/Group/Tabs.js'
+import { Group, Tab } from '@/core/index.js'
 
 // @change="changeValue(fieldName, $event)"
 export default {
@@ -55,9 +56,7 @@ export default {
         hasFieldOptions(fieldName) {
             return Boolean(this.model?.field(fieldName)?.options)
         },
-        isFieldGroup(fieldName) {
-            return fieldName instanceof Group
-        },
+        
         // changeValue(fieldName, e) {
         //     console.log(fieldName, e.target.value)
         //     this.$emit('changeValue', fieldName, e.target.value)
@@ -72,12 +71,19 @@ export default {
             )
         },
 
-        isShown(group) {
-            return !group.hidden
+        isFieldGroup(fieldName) {
+            return fieldName instanceof Group
+        },
+        isTab(fieldName) {
+            return fieldName instanceof Tab
         },
 
-        hide(group) {
-            group.toggle()
+        isSelected(group) {
+            return !(group instanceof Tab) || group.selected
+        },
+
+        selectTab(group) {
+            group.select()
         },
     },
     created() {

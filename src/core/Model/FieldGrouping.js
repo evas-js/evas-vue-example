@@ -1,3 +1,10 @@
+/**
+ * Классы для группировки полей.
+ * @package evas-vue
+ * @author Egor Vasyakin <egor@evas-php.com>
+ * @license CC-BY-4.0
+ */
+import { logger } from '../Log.js'
 
 export class Group
 {
@@ -41,20 +48,23 @@ export class Group
         })
     }
     next(names, cb) {
-        console.log('next', names, this)
-        if (!names || !names.length) {
-            if (cb) cb(this)
-            return this.items
-            // return this instanceof Tabs ? this.selected?.items : this.items
-            // return this instanceof Tabs ? this.selected?.items : this.items
-        }
-        const next = names.shift()
-        const group = Object.values(this.items).find(item => item.name == next)
-        console.log(next, group)
-        // return names.length ? group.next(names) : group
-        console.log('end next', next, group)
-        if (cb) cb(group)
-        return group ? group.next(names) : group
+        const className = this.constructor.name
+        return logger.methodCall(`${className}.next`, null, () => {
+            logger.keyValue('this', this)
+            logger.keyValue('names', names)
+            if (!names || !names.length) {
+                if (cb) cb(this)
+                logger.keyValue(`result is ${className} items`, this.items)
+                return this.items
+                // return this instanceof Tabs ? this.selected?.items : this.items
+            }
+            const next = names.shift()
+            logger.keyValue('nextName', next)
+            const group = Object.values(this.items).find(item => item.name == next)
+            logger.keyValue('next', group)
+            if (cb) cb(group)
+            return group ? group.next(names) : group
+        })
     }
 }
 
@@ -82,10 +92,7 @@ export class Tabs extends Group
             item.parent = this
             if (selected === undefined) {
                 // предвыбранный таб
-                // this.selectedIndex = key
-                // console.error('asdassad', selected)
                 selected = key
-                // this.selectedIndex = 'general'
             }
             return item
         })
@@ -93,17 +100,18 @@ export class Tabs extends Group
     }
 
     selectTab(name) {
-        // if (!this.items[name]) return;
+        if (!this.items[name]) return;
         if (this.selected) this.selected.selected = false
         this.selectedIndex = name
         if (this.selected) this.selected.selected = true
     }
 }
 
-class Tab extends Group
+export class Tab extends Group
 {
     type = 'tab'
     // selected = false
+    // parent
     setItems(items) {
         this.setItemsInBlock(items)
     }
