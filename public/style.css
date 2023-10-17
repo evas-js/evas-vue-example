@@ -37,6 +37,8 @@ table button + button {margin-left: 5px;}
 .fieldset {background: #ddd; border-radius: 5px; padding: 15px; width: 100%;}
 .fieldset {border: solid #aaa 1px;}
 .field {align-items: center; display: flex; justify-content: space-between; width: 100%;}
+.tabName {color: #209761; cursor: pointer; border-bottom: dashed 1px #209761;}
+.tabName.selected {border-bottom-style: solid;}
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
