@@ -161,9 +161,7 @@ Model.prototype.$displayFields = function (group = null) {
  * @return Array поля доступные к отображению
  */
 Model.prototype.$applyFieldsDisplayRules = function (fieldNames = null) {
-    // if (!fieldNames) fieldNames = this.constructor.rulesForVariableDisplayOfFields
     if (!fieldNames) fieldNames = this.$fieldNames()
-        // return fieldNames
     return Object.values(fieldNames).reduce((viewFields, fieldName) => {
         const rule = this.constructor.rulesForVariableDisplayOfFields?.[fieldName]
         if (rule) {
@@ -182,6 +180,38 @@ Model.prototype.$applyFieldsDisplayRules = function (fieldNames = null) {
         }
         return viewFields
     }, [])
+}
+
+/**
+ * Очистка данных полей.
+ * @param Array имена полей
+ * @return Array имена полей
+ */
+Model.prototype.$clearFields = function (fieldNames = null) {
+    if (!fieldNames) fieldNames = this.constructor.fieldNames()
+    fieldNames.forEach(name => {
+        if (name !== 'id') this[name] = this.$state[name]
+    })
+    return fieldNames
+}
+/**
+ * Очистка данных отображаемых полей.
+ */
+Model.prototype.$clearDisplayFields = function () {
+    const displayFields = this.$displayFields()
+    const clearFields = this.constructor.fieldNames().filter(
+        name => !displayFields.includes(name)
+    )
+    this.$clearFields(clearFields)
+}
+
+/**
+ * Выбор группы полей (переключение табов).
+ * @param Group группа полей
+ */
+Model.prototype.$selectGroup = function (group) {
+    // this.$clearDisplayFields() // очистка отображаемых полей
+    group.select()
 }
 
 
