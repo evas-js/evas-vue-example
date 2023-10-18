@@ -53,13 +53,16 @@ Model.prototype.$clearErrors = function () {
 Model.prototype.$fieldNamesForValidate = function () {
     const dirty = this.$dirtyFields()
     // const rules = this.$applyFieldsDisplayRules()
-    const rules = this.$displayFields()
+    const display = this.$displayFields()
     logger.keyValue('dirty', dirty)
-    logger.keyValue('rules', rules)
+    logger.keyValue('display', display)
     logger.keyValue('this', this)
     logger.keyValue('this.$state', this.$state)
-    // let fieldNames = this.$isNew && rules.length ? dirty.filter(fieldName => rules.includes(fieldName)) : dirty
-    let fieldNames = this.$isNew && rules.length ? rules : dirty
+    let fieldNames = this.$isNew && display.length ? display : dirty
+    if (Array.isArray(this.constructor.alwaysSend)) {
+        logger.keyValue('alwaysSend', this.constructor.alwaysSend)
+        fieldNames = fieldNames.concat(this.constructor.alwaysSend)
+    }
     // logger.keyValue('fieldNames', fieldNames)
 
     // const registered = this.constructor.fieldNames()

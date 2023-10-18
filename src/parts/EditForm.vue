@@ -105,8 +105,6 @@ export default {
         // },
         updateDisplayFields() {
             console.log('updateDisplayFields')
-            // this.displayFields = this.data.$displayFields()
-            // this.displayFields = this.data.$fieldGroup([0])
             const group = this.data.$fieldGroup()
             // const group = this.data.$fieldGroup('general')
             // const group = this.data.$fieldGroup('general', 2)

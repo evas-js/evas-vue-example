@@ -149,7 +149,7 @@ Model.prototype.$displayFields = function (group = null) {
         const fields = this.$displayGroup.recursiveFields()
         logger.keyValue('fields', fields)
         const displayFields = this.$applyFieldsDisplayRules(fields)
-        logger.keyValue('return', displayFields)
+        logger.keyValue('return displayFields', displayFields)
         return displayFields
     })
 }
