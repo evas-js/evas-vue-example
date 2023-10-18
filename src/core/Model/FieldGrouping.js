@@ -24,11 +24,17 @@ export class Group
     setItems(items) {
         this.items = items
     }
+    eachItems(cb, items = null) {
+        if (!items) items = this.items
+        if (items) Object.entries(items).forEach(([key, item]) => {
+            cb(key, item)
+        })
+    }
     fillItems(items, cb) {
         this.items = {}
-        if (items) Object.entries(items).forEach(([key, item]) => {
+        this.eachItems((key, item) => {
             this.items[key] = cb(key, item)
-        })
+        }, items)
     }
     setItemsInBlock(items) {
         this.fillItems(items, (key, item) => {
@@ -54,8 +60,10 @@ export class Group
             logger.keyValue('names', names)
             if (!names || !names.length) {
                 if (cb) cb(this)
-                logger.keyValue(`result is ${className} items`, this.items)
-                return this.items
+                // logger.keyValue(`result is ${className} items`, this.items)
+                // return this.items
+                logger.keyValue(`result is ${className}`, this)
+                return this
                 // return this instanceof Tabs ? this.selected?.items : this.items
             }
             const next = names.shift()
@@ -65,6 +73,20 @@ export class Group
             if (cb) cb(group)
             return group ? group.next(names) : group
         })
+    }
+
+    recursiveFields() {
+        let fields = []
+        this.eachItems((key, item) => {
+            if (item instanceof Group) {
+                if (!(item instanceof Tab) || item.selected) {
+                    fields = fields.concat(item.recursiveFields())
+                }
+            } else {
+                fields.push(item)
+            }
+        })
+        return fields
     }
 }
 

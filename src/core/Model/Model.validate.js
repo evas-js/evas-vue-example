@@ -52,8 +52,8 @@ Model.prototype.$clearErrors = function () {
  */
 Model.prototype.$fieldNamesForValidate = function () {
     const dirty = this.$dirtyFields()
-    const rules = this.$applyFieldsDisplayRules()
-    // const rules = this.$displayFields()
+    // const rules = this.$applyFieldsDisplayRules()
+    const rules = this.$displayFields()
     logger.keyValue('dirty', dirty)
     logger.keyValue('rules', rules)
     logger.keyValue('this', this)

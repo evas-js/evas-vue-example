@@ -29,6 +29,7 @@ Model.fields = function () {
     if (!this._fields) {
         this._fields = {}
         this._fields = this.buildFields(this.setFields())
+        this.displayRules()
     }
     return this._fields
 }
@@ -90,6 +91,9 @@ Model.buildFields = function (fields, name = null) {
  */
 Model.fieldNames = function () {
     return Object.keys(this.fields())
+}
+Model.prototype.$fieldNames = function () {
+    return this.constructor.fieldNames()
 }
 
 /**
