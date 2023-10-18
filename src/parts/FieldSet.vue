@@ -54,6 +54,8 @@ export default {
             return this.model.fieldOptions(fieldName)
         },
         hasFieldOptions(fieldName) {
+            // console.log(fieldName, this.model?.field(fieldName))
+            // return Boolean(this.model?.field(fieldName)?.display?.component === 'select')
             return Boolean(this.model?.field(fieldName)?.options)
         },
         
@@ -83,7 +85,8 @@ export default {
         },
 
         selectTab(group) {
-            group.select()
+            // group.select()
+            this.data.$selectGroup(group)
         },
     },
     created() {
