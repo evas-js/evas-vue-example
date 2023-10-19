@@ -80,7 +80,7 @@ Model.prototype.$fieldNamesForValidate = function () {
  * Валидация записи.
  */
 Model.prototype.$validate = function (fieldNames = null) {
-    return logger.methodCall(`${this.$entityName}{${this.$id}}.$validate`, arguments, () => {
+    return logger.methodCall(`${this.$entityNameWithId}.$validate`, arguments, () => {
         if (!fieldNames) fieldNames = this.$fieldNamesForValidate()
         this.$clearErrors()
         this.constructor.eachFields((field) => {

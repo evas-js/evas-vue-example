@@ -61,7 +61,6 @@ Model.tabs = function (name, items) {
  * @return Object правила поля или полей
  */
 Model.displayRules = function () {
-// Model.displayRules = function (group = null) {
     if (!this._displayRules) {
         const rules = this.setDisplayRules()
         // подтягиваем пропсы из полей
@@ -85,7 +84,6 @@ Model.displayRules = function () {
         })
         this._displayRules = rules
     }
-    // return [null, undefined].includes(groudisplayRulesp) ? this._displayRules : this._displayRules[group]
     return this._displayRules
 }
 
@@ -126,7 +124,7 @@ Model.fieldGroup = function (names) {
     })
 }
 Model.prototype.$fieldGroup = function () {
-    return logger.methodCall(`${this.$entityName}.{${this.$id}}.$fieldGroup`, arguments, () => {
+    return logger.methodCall(`${this.$entityNameWithId}.$fieldGroup`, arguments, () => {
         this.$displayGroup = this.constructor.fieldGroup(...arguments)
         logger.keyValue('this.$displayGroup', this.$displayGroup)
         return this.$displayGroup
@@ -139,7 +137,7 @@ Model.prototype.$fieldGroup = function () {
  * @return Array поля доступные к отображению
  */
 Model.prototype.$displayFields = function (group = null) {
-    return logger.methodCall(`${this.$entityName}{${this.$id}}.$displayFields`, arguments, () => {
+    return logger.methodCall(`${this.$entityNameWithId}.$displayFields`, arguments, () => {
         if (group) this.$fieldGroup(group)
         if (!this.$displayGroup) {
             this.$fieldGroup()
@@ -161,7 +159,8 @@ Model.prototype.$displayFields = function (group = null) {
  * @return Array поля доступные к отображению
  */
 Model.prototype.$applyFieldsDisplayRules = function (fieldNames = null) {
-    if (!fieldNames) fieldNames = this.$fieldNames()
+    // if (!fieldNames) fieldNames = this.$fieldNames()
+    if (!fieldNames) fieldNames = this.$displayFields()
     return Object.values(fieldNames).reduce((viewFields, fieldName) => {
         const rule = this.constructor.rulesForVariableDisplayOfFields?.[fieldName]
         if (rule) {
@@ -188,21 +187,25 @@ Model.prototype.$applyFieldsDisplayRules = function (fieldNames = null) {
  * @return Array имена полей
  */
 Model.prototype.$clearFields = function (fieldNames = null) {
-    if (!fieldNames) fieldNames = this.constructor.fieldNames()
-    fieldNames.forEach(name => {
-        if (name !== 'id') this[name] = this.$state[name]
+    return logger.methodCall(`${this.$entityNameWithId}.$clearFields`, arguments, () => {
+        if (!fieldNames) fieldNames = this.constructor.fieldNames()
+        fieldNames.forEach(name => {
+            if (name !== 'id') this[name] = this.$state[name]
+        })
+        return fieldNames
     })
-    return fieldNames
 }
 /**
  * Очистка данных отображаемых полей.
  */
 Model.prototype.$clearDisplayFields = function () {
-    const displayFields = this.$displayFields()
-    const clearFields = this.constructor.fieldNames().filter(
-        name => !displayFields.includes(name)
-    )
-    this.$clearFields(clearFields)
+    logger.methodCall(`${this.$entityNameWithId}.$clearDisplayFields`, arguments, () => {
+        const displayFields = this.$displayFields()
+        const clearFields = this.constructor.fieldNames().filter(
+            name => !displayFields.includes(name)
+        )
+        this.$clearFields(clearFields)
+    })
 }
 
 /**
@@ -210,8 +213,10 @@ Model.prototype.$clearDisplayFields = function () {
  * @param Group группа полей
  */
 Model.prototype.$selectGroup = function (group) {
-    // this.$clearDisplayFields() // очистка отображаемых полей
-    group.select()
+    logger.methodCall(`${this.$entityNameWithId}.$selectGroup`, arguments, () => {
+        this.$clearDisplayFields() // очистка отображаемых полей
+        group.select()
+    })
 }
 
 

@@ -27,6 +27,10 @@ export class Model {
     get $entityName() {
         return this.constructor.entityName
     }
+
+    get $entityNameWithId() {
+        return `${this.$entityName}{${this.$id}}`
+    }
 }
 
 Model.isRootModel = function () {
