@@ -16,6 +16,7 @@ export const Query = class {
         '<':    (col, val) => { return col < val },
         '<=':   (col, val) => { return col <= val }, 
         // in - whereIn
+        // notIn - whereNotIn
     }
 
     model
@@ -34,8 +35,9 @@ export const Query = class {
             value = condition
             condition = '='
         }
-        if ('in' === condition) {
-            return this._whereIn(isOr, column, value)
+        if (['in', 'notIn'].includes(condition)) {
+            const isNot = 'notIn' === condition
+            return this._whereIn(isOr, isNot, column, value)
         }
         this._wheres.push({ column, condition, value, isOr })
         return this
@@ -49,28 +51,36 @@ export const Query = class {
         return this._where(true, ...arguments)
     }
 
-    _whereIn(isOr, column, values) {
+    _whereIn(isOr, isNot, column, values) {
         if ('string' !== typeof column) {
             throw new Error(
-                `whereIn argument column must be a string, ${typeof column} given`
+                `_whereIn argument column must be a string, ${typeof column} given`
             )
         }
         if (!Array.isArray(values)) {
             throw new Error(
-                `whereIn argument values must be an array, ${typeof values} given`
+                `_whereIn argument values must be an array, ${typeof values} given`
             )
         }
         return this._where(isOr, (row) => {
-            return values.includes(row[column])
+            return values.includes(row[column]) === !isNot
         })
     }
 
     whereIn(/*column, values*/) {
-        return this._whereIn(false, ...arguments)
+        return this._whereIn(false, false, ...arguments)
     }
 
     orWhereIn(/*column, values*/) {
-        return this._whereIn(true, ...arguments)
+        return this._whereIn(true, false, ...arguments)
+    }
+
+    whereNotIn(/*column, values*/) {
+        return this._whereIn(false, true, ...arguments)
+    }
+
+    orWhereNotIn(/*column, values*/) {
+        return this._whereIn(true, true, ...arguments)
     }
 
     orderBy(column, desc = false) {
