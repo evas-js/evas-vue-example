@@ -4,8 +4,8 @@
             <legend>{{ title }}</legend>
             <!-- <div> -->
 
-            <div class="fields">
-                <FieldSet 
+            <div v-if="displayFields" class="fields">
+                <FieldSetWithFields 
                     :data="data"
                     :displayFields="displayFields"
                     :model="model"
@@ -41,7 +41,8 @@
 </template>
 
 <script>
-import FieldSet from './FieldSet.vue'
+import FieldSetWithFields from './FieldSetWithFields.vue'
+// import FieldSetWithFieldNames from './FieldSetWithFieldNames.vue'
 
 export default {
     props: {
@@ -105,19 +106,27 @@ export default {
         // },
         updateDisplayFields() {
             console.log('updateDisplayFields')
-            const group = this.data.$fieldGroup()
-            // const group = this.data.$fieldGroup('general')
-            // const group = this.data.$fieldGroup('general', 2)
-            // const group = this.data.$fieldGroup('general', 'name')
-            // const group = this.data.$fieldGroup('general', 2, 'create_time')
-            // const group = this.data.$fieldGroup('system')
-            // const group = this.data.$fieldGroup('system', 0)
-            this.displayFields = group.items
+            // const group = this.data.$fieldNamesGroup(undefined)
+            // const group = this.data.$fieldNamesGroup(null)
+            // const group = this.data.$fieldNamesGroup()
+            // const group = this.data.$fieldsGroup()
+            // const group = this.data.$fieldNamesGroup('general')
+            // const group = this.data.$fieldNamesGroup('general', 2)
+            // const group = this.data.$fieldNamesGroup('general', 'name')
+            // const group = this.data.$fieldNamesGroup('general', 2, 'create_time')
+            // const group = this.data.$fieldNamesGroup('system')
+            // const group = this.data.$fieldNamesGroup('system', 0)
+            let group = this.data.$fieldsGroup()
+            // console.warn('group', group)
+            // const group = this.data.$fieldNamesGroup()
+
+            // this.displayFields = group.items
+            this.displayFields = group
             console.warn('group', group)
             // this.displayFields = this.data.$applyFieldsDisplayRules(
-            //     this.data.$fieldGroup([1])
+            //     this.data.$fieldNamesGroup([1])
             // )
-            // console.error(this.data.$fieldGroup([0]))
+            // console.error(this.data.$fieldNamesGroup([0]))
         },
         // changeValue(fieldName, value) {
         changeValue() {
@@ -158,6 +167,7 @@ export default {
         // this.setData()
         this.updateDisplayFields()
     },
-    components: { FieldSet }
+    components: { FieldSetWithFields }
+    // components: { FieldSetWithFieldNames }
 }
 </script>

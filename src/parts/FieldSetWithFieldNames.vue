@@ -1,14 +1,14 @@
 <template>
-    <div class="fieldset">
+    <div v-if="displayFields.names" class="fieldset">
         <template v-for="fieldName in realDisplayFields" :key="fieldName">
             <template v-if="isFieldGroup(fieldName)">
                 <span v-if="isTab(fieldName)" class="tabName" :class="{selected: isSelected(fieldName)}" @click="selectTab(fieldName)">
                     {{ fieldName.name }}
                 </span>
                 <!-- {{ fieldName }} -->
-                <FieldSet v-if="isSelected(fieldName)"
+                <FieldSetWithFieldNames v-if="isSelected(fieldName)"
                     :data="data"
-                    :displayFields="fieldName.items"
+                    :displayFields="fieldName"
                     :model="model"
                     @changeValue="changeValue"
                 />
@@ -68,9 +68,14 @@ export default {
             this.updateDisplayFields()
         },
         updateDisplayFields() {
-            this.realDisplayFields = this.data.$applyFieldsDisplayRules(
-                this.displayFields
+            console.log('this.displayFields.names', this.displayFields.names)
+            // this.realDisplayFields = this.displayFields
+            const names = this.data.$applyFieldsDisplayRules(
+                this.displayFields.names
             )
+            console.log('names', names)
+            this.realDisplayFields = Object.values(this.displayFields.names).filter(item => item instanceof Group || names.includes(item))
+            console.log('this.realDisplayFields', this.realDisplayFields)
         },
 
         isFieldGroup(fieldName) {

@@ -75,8 +75,28 @@ export class User2 extends Model {
                 // this.block(['type', 'role']),
                 ['type', 'tagAny', 'tagsAny'],
                 'role', 'tagsArray',
-            ]
+            ],
         })
+        // return {
+        //     'general': [
+        //         'name', 'email',
+        //         // this.block(['create_time'])
+        //         ['create_time'],
+        //     ],
+        //     'system': [
+        //         // this.block(['type', 'role']),
+        //         ['type', 'tagAny', 'tagsAny'],
+        //         'role', 'tagsArray',
+        //     ]
+        // }
+        // return [
+        //     'name', 'email',
+        //     this.block(['create_time']),
+        //     // 'create_time',
+        //     this.block(['type', 'role']),
+        //     // ['type', 'tagAny', 'tagsAny'],
+        //     // 'role', 'tagsArray',
+        // ]
     }
 
     $beforeFieldGroup(names) {
