@@ -1,0 +1,113 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    --primary: rgb(92, 65, 163);
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto';
+}
+
+.btn,
+button {
+    background-color: var(--primary);
+    border: 0;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 15px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-small {
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+.btn:hover,
+button:hover {
+    background-color: rgb(92, 65, 163, 0.9);
+}
+
+.field * {
+    min-width: 200px;
+    min-height: 30px;
+}
+
+.tableView {
+    padding: 0 30px;
+}
+
+.tableView-main {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.tableView table,
+.tableView tr {
+    border: 0;
+    width: 100%;
+    border-spacing: 0;
+}
+
+.tableView-main thead th {
+    background-color: rgba(78, 53, 177, 0.092);
+    border: 0 solid rgba(0, 0, 0, 0.1);
+    border-bottom-width: 2px;
+    border-right-width: 1px;
+}
+
+.tableView-main thead th:last-child {
+    border-right-width: 0px;
+}
+
+.tableView-main td,
+.tableView-main th {
+    height: 40px;
+}
+
+.tableView-main tbody tr:nth-child(even) td {
+    background-color: rgba(34, 100, 199, 0.1);
+}
+
+.tableView-info {
+    margin-top: 3px;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+nav a {
+    color: var(--primary);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+nav a:hover {
+    color:rgb(92, 65, 163, 0.7)
+}
+
+nav a.router-link-active {
+    text-decoration: underline;
+}
+
+.list {
+    width: fit-content;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.list ol {
+    width: fit-content;
+    padding-left: 20px;
+}

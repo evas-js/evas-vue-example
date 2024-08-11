@@ -1,39 +1,58 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
 
-import { EvasVue } from './core/index.js'
-import models from './store/models.js'
 import api from './api'
+import models from './store/models.js'
+import { EvasVue } from './core/evas-vue'
 
-// import { Model } from '@/core/Model/Model.js'
-// import { User } from '@/store/models/User.js'
+import { createWebHistory, createRouter } from 'vue-router'
 
-// User.fetchList(() => {
-//     console.log('loaded')
-// })
+import HomePage from './pages/HomePage.vue'
+import UserListPage from './pages/UserListPage.vue'
+import UserShowPage from './pages/UserShowPage.vue'
+import UserEditPage from './pages/UserEditPage.vue'
 
-// // let a = new Model
+import TableView from '@/parts/table/TableView'
+import BaseBtn from '@/parts/common/BaseBtn'
+import StringField from '@/parts/fields/StringField'
+import SelectField from '@/parts/fields/SelectField'
+import TextField from '@/parts/fields/TextField'
 
-// // console.log(Model, Model.static(), Model.name1)
-// // console.log(a, a.name1)
-// // a.hello()
-// // console.log(User.setFields())
-// // console.log(User.fields())
-// let user1 = new User()
-// console.log(user1, user1.$state, user1.$isNew, user1.$isDirty, user1.$dirtyData)
+const routes = [
+    { path: '/', component: HomePage },
+    { path: '/user', component: UserListPage },
+    { path: '/user/show/:id', component: UserShowPage },
+    { path: '/user/edit/:id', component: UserEditPage },
+]
 
-// let user2 = new User({name: 'Egor'})
-// user2.id = 1
-// user2.name = 'Egor2'
-// // user2.$saveState()
-// console.log(user2, user2.$state, user2.$isNew, user2.$isDirty, user2.$dirtyData)
-// // console.log(Model.setFields(), User.setFields())
-// // console.log(Model.fields(), User.fields())
-
-
-createApp(App).use(router)
-.use(EvasVue, {
-    models, api, // debug: false
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
 })
-.mount('#app')
+
+createApp(App)
+    .component('TableView', TableView)
+    .component('BaseBtn', BaseBtn)
+    .component('StringField', StringField)
+    .component('SelectField', SelectField)
+    .component('TextField', TextField)
+
+    .use(router)
+    // .use(EvasVue, { models, callApi, mocks, initRequestInterceptor })
+    .use(EvasVue, {
+        debug: true,
+        // useModelState: true,
+        models, 
+        api
+        // : {
+        //     enabled: true,
+        //     handler,
+        //     contract,
+        //     requestInterceptor: {
+        //         enabled: true,
+        //         init,
+        //         mocks,
+        //     },
+        // }
+    })
+    .mount('#app')

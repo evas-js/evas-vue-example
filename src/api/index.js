@@ -1,25 +1,15 @@
-// import { MockApi } from 'evas-vue'
-import { MockApi } from '@/core/index.js'
-import { users } from './mock.js'
-
-const delay = 100
-
-const response = (data, cb) => {
-    if (cb) setTimeout(() => cb(data), delay)
-}
-
-const mockApi = new MockApi({ users })
-
-const userMock = {
-    insert: (data, cb) => {
-        response(mockApi.insert('users', data), cb)
-    },
-    update: (data, cb) => response(mockApi.update('users', data), cb),
-    delete: (data, cb) => response(mockApi.delete('users', data), cb),
-    list: (data, cb) => response(mockApi.list('users', data), cb),
-}
+import { contract } from './api.contract.js'
+import { handler } from './api.handler.js'
+import { initRequestInterceptor as init } from './api.initRequestInterceptor.js'
+import { mocks } from './api.mocks.js'
 
 export default {
-    user: userMock,
-    user2: userMock,
+    enabled: true,
+    handler,
+    contract,
+    requestInterceptor: {
+        enabled: true,
+        init,
+        mocks,
+    },
 }
