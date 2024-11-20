@@ -52,7 +52,7 @@ export class User2 extends Model {
         tagsArray: [ 'role', 'admin' ],
     }
 
-    static setDisplayRules() {
+    $setDisplayRules() {
         return {
             name: 'string',
             email: 'string',
@@ -64,8 +64,17 @@ export class User2 extends Model {
             create_time: 'string'
         }
     }
-    static setFieldGrouping() {
-        return this.tabs({
+    $setFieldGrouping() {
+        if (this.$id === 1) {
+            return this.$tabs({
+                'general': [
+                    'name', 'email',
+                    // this.block(['create_time'])
+                    ['create_time'],
+                ],
+            })
+        }
+        return this.$tabs({
             'general': [
                 'name', 'email',
                 // this.block(['create_time'])

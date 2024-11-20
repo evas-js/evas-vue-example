@@ -34,6 +34,7 @@ import api from './api'
 
 createApp(App).use(router)
 .use(EvasVue, {
-    models, api, // debug: false
+    models, api, 
+    // debug: false
 })
 .mount('#app')
