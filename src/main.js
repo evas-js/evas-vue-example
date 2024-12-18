@@ -36,5 +36,15 @@ createApp(App).use(router)
 .use(EvasVue, {
     models, api, 
     // debug: false
+    // validate: {
+    //     templates: {
+    //         'ru': {
+    //             'required': () => 'required',
+    //             'length': (ctx) => `length, ${ctx.name}`,
+    //         },
+    //     },
+    //     getCurrentLangCb: () => 'en',
+    //     // defaultLang: 'ru',
+    // }
 })
 .mount('#app')
